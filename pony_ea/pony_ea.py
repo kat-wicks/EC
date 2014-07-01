@@ -70,23 +70,6 @@ Components
   - Random number generation seed, integer
   - Mutation probability, float
 
-Glossary
-~~~~~~~~
-
-EA terms:
-
-  - *Population* -- set of individuals
-  - *Individual* -- an individual solution
-  - *Fitness* -- quality measure of an individual
-  - *Generation* -- An iteration of the EA
-  - *Gene* -- the basic representation of an individual
-  - *Chromosome* -- set of genes of an individual
-  - *Crossover* -- recombination of two individuals' genomes
-  - *Mutation* -- permutation of an individual's genome
-  - *Elite* -- individuals preserved from the old population and allowed into
-  the new population
-  - *Fitness function* -- Function used to evaluate the fitness of an individual
-
 Running **EA**
 ----------------------------
 
