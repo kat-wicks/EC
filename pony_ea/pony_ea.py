@@ -36,7 +36,7 @@ Change the fitness function ot apply the algorithm to a different problem.
 .. codeauthor:: Erik Hemberg <hembergerik@csail.mit.edu>
 
 Evolutionary Algorithm Description
-----------------------------------------------------
+----------------------------------
 
 Components
 ~~~~~~~~~~

@@ -199,6 +199,7 @@ class TreeNode(object):
       node
       - Symbol -- The label of the node
       - Children -- The children of the node
+
     """
 
     def __init__(self, parent=None, symbol=None):
@@ -253,6 +254,7 @@ class Symbols(object):
       the symbol as the value
       - Terminals -- List of the terminal symbols, arity is 0
       - Functions -- List of the function symbols, arity greater than 0
+
     """
 
     def __init__(self, arities):
@@ -380,6 +382,7 @@ class SymbolicRegression(object):
     - Fitness cases -- Input values for the exemplars
     - Targets -- The target values corresponding to the fitness case
     - Variables -- The current value of the variables in the evaluated exemplar
+
     """
 
     def __init__(self, fitness_cases, targets):
@@ -473,12 +476,12 @@ class GP(object):
     - Elite size -- Number of individuals preserved between generations
     - Crossover probability -- Probability of crossing over two solutions
     - Mutation probability -- Probability of mutating a solution
-    - Fitness function -- Method used to evaluate fitness, e.g.
-      :ref:`**STU Tron ALFA** non-adversarial <tron_non_adversarial_fitness>`
+    - Fitness function -- Method used to evaluate fitness
     - Symbols -- The symbols that a GP tree can be built from
 
     POPULATION_FILE
       File where population is saved
+
     """
 
     POPULATION_FILE = 'gp_population.dat'
@@ -577,6 +580,7 @@ class GP(object):
         :param fitness_function: Fitness function to evaluate the population on
         :type fitness_function: Object
         """
+
         # Iterate over all the individual solutions
         for ind in individuals:
             # Execute the builtin '__call__' method of the fitness function

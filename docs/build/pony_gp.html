@@ -1,0 +1,726 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pony_gp module &mdash; EC-Stable 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="EC-Stable 1 documentation" href="index.html" />
+    <link rel="next" title="oop_pony_gp module" href="oop_pony_gp.html" />
+    <link rel="prev" title="About Pony GP" href="about.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="oop_pony_gp.html" title="oop_pony_gp module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="about.html" title="About Pony GP"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">EC-Stable 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pony_gp">
+<span id="pony-gp-module"></span><h1>pony_gp module<a class="headerlink" href="#module-pony_gp" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pony_gp.append_node">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">append_node</tt><big>(</big><em>node</em>, <em>symbol</em><big>)</big><a class="headerlink" href="#pony_gp.append_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append a symbol to the node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>node</strong> (<em>list</em>) &#8211; The node that will be appended to</li>
+<li><strong>symbol</strong> (<em>str</em>) &#8211; The symbol that is appended</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.evaluate">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">evaluate</tt><big>(</big><em>node</em>, <em>case</em><big>)</big><a class="headerlink" href="#pony_gp.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a node recursively. The node&#8217;s symbol string is evaluated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>list</em>) &#8211; Evaluated node</li>
+<li><strong>case</strong> (<em>list</em>) &#8211; Current fitness case</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Value of the evaluation</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.evaluate_fitness">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">evaluate_fitness</tt><big>(</big><em>individuals</em>, <em>param</em><big>)</big><a class="headerlink" href="#pony_gp.evaluate_fitness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the fitness evaluation for each individual of the population.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>individuals</strong> (<em>list</em>) &#8211; Population to evaluate</li>
+<li><strong>param</strong> (<em>dict</em>) &#8211; parameters for pony gp</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.evaluate_individual">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">evaluate_individual</tt><big>(</big><em>individual</em>, <em>fitness_cases</em>, <em>targets</em><big>)</big><a class="headerlink" href="#pony_gp.evaluate_individual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate fitness based on fitness cases and target values. Fitness
+cases are a set of exemplars (input and output points) by
+comparing the error between the output of an individual(symbolic
+expression) and the target values.</p>
+<p>Evaluates and sets the fitness in an individual. Fitness is the
+negative mean square error(MSE).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>individual</strong> (<em>dict</em>) &#8211; Individual solution to evaluate</li>
+<li><strong>fitness_cases</strong> (<em>list</em>) &#8211; Input for the evaluation</li>
+<li><strong>targets</strong> (<em>list</em>) &#8211; Output corresponding to the input</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.find_and_replace_subtree">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">find_and_replace_subtree</tt><big>(</big><em>root</em>, <em>subtree</em>, <em>node_idx</em>, <em>idx</em><big>)</big><a class="headerlink" href="#pony_gp.find_and_replace_subtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current index and replaces the root with another subtree at the
+given index. The index is based on depth-first left-to-right traversal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root</strong> (<em>list</em>) &#8211; Root of the tree</li>
+<li><strong>subtree</strong> (<em>list</em>) &#8211; Subtree that will replace the root</li>
+<li><strong>node_idx</strong> (<em>int</em>) &#8211; Index of the node to be replaced</li>
+<li><strong>idx</strong> (<em>int</em>) &#8211; Current index</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Current index</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.generational_replacement">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">generational_replacement</tt><big>(</big><em>new_population</em>, <em>old_population</em>, <em>param</em><big>)</big><a class="headerlink" href="#pony_gp.generational_replacement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return new a population. The <cite>elite_size</cite> best old_population
+are appended to the new population. They are kept in the new
+population if they are better than the worst.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>new_population</strong> (<em>list</em>) &#8211; the new population</li>
+<li><strong>old_population</strong> (<em>list</em>) &#8211; the old population</li>
+<li><strong>param</strong> (<em>dict</em>) &#8211; parameters for pony gp</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the new population with the best from the old population</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_depth_from_index">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_depth_from_index</tt><big>(</big><em>node</em>, <em>idx</em>, <em>node_idx</em>, <em>depth</em>, <em>idx_depth</em><big>)</big><a class="headerlink" href="#pony_gp.get_depth_from_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the depth of a node based on the index. The index is based on
+depth-first left-to-right traversal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>list</em>) &#8211; Current node</li>
+<li><strong>idx</strong> (<em>int</em>) &#8211; Current index</li>
+<li><strong>node_idx</strong> (<em>int</em>) &#8211; Index of the node which depth we are searching for</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; Current depth</li>
+<li><strong>idx_depth</strong> (<em>int</em>) &#8211; Depth of the node at the given index</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Current index and depth of the node at the given index</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_max_tree_depth">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_max_tree_depth</tt><big>(</big><em>node</em>, <em>depth</em>, <em>max_depth</em><big>)</big><a class="headerlink" href="#pony_gp.get_max_tree_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the max depth of the tree. Recursively traverse the tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>list</em>) &#8211; Root of the tree</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; Current tree depth</li>
+<li><strong>max_depth</strong> (<em>int</em>) &#8211; Maximum depth of the tree</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Maximum depth of the tree</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_node_at_index">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_node_at_index</tt><big>(</big><em>root</em>, <em>idx</em><big>)</big><a class="headerlink" href="#pony_gp.get_node_at_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the node in the tree at a given index. The index is
+according to a depth-first left-to-right ordering.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root</strong> (<em>list</em>) &#8211; Root of tree</li>
+<li><strong>idx</strong> (<em>int</em>) &#8211; Index of node to find</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Node at the given index (based on depth-first left-to-right
+indexing)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_nodes_with_equal_arity">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_nodes_with_equal_arity</tt><big>(</big><em>root</em>, <em>arity</em>, <em>nodes</em>, <em>idx</em>, <em>arities</em><big>)</big><a class="headerlink" href="#pony_gp.get_nodes_with_equal_arity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of nodes and nodes with equal arity. Depth-first
+left-to-right traversal searching for nodes of a given arity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root</strong> (<em>list</em>) &#8211; Root of the tree</li>
+<li><strong>arity</strong> (<em>int</em>) &#8211; Arity we are searching for</li>
+<li><strong>nodes</strong> (<em>list</em>) &#8211; Nodes with the given arity</li>
+<li><strong>idx</strong> (<em>int</em>) &#8211; Current index</li>
+<li><strong>arities</strong> (<em>dict</em>) &#8211; Dictionary of the symbols and their corresponding arities</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Number of nodes and nodes with a given arity</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_number_of_nodes">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_number_of_nodes</tt><big>(</big><em>root</em>, <em>cnt</em><big>)</big><a class="headerlink" href="#pony_gp.get_number_of_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of nodes in the tree. A recursive depth-first
+left-to-right search is done</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root</strong> (<em>list</em>) &#8211; Root of tree</li>
+<li><strong>cnt</strong> (<em>int</em>) &#8211; Current number of nodes in the tree</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Number of nodes in the tree</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_random_symbol">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_random_symbol</tt><big>(</big><em>depth</em>, <em>max_depth</em>, <em>symbols</em>, <em>full=False</em><big>)</big><a class="headerlink" href="#pony_gp.get_random_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a randomly chosen symbol. The depth determines if a terminal
+must be chosen. If full is specified a function will be chosen
+until the max depth. The symbols is picked with a uniform probability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>depth</strong> (<em>int</em>) &#8211; Current depth</li>
+<li><strong>max_depth</strong> (<em>int</em>) &#8211; Max depth determines if a function symbol can be
+chosen. I.e. a symbol with arity greater than zero</li>
+<li><strong>symbols</strong> (<em>dict</em>) &#8211; The possible symbols.</li>
+<li><strong>full</strong> &#8211; True if function symbols should be drawn until max depth</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A random symbol</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_symbols">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_symbols</tt><big>(</big><big>)</big><a class="headerlink" href="#pony_gp.get_symbols" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Return a symbol dictionary. Helper method to keep the code clean. The nodes in
+a GP tree consists of different symbols. The symbols are either
+functions (internal nodes with arity &gt; 0) or terminals (leaf nodes with
+arity = 0) The symbols is represented as a dictionary with the keys:</div></blockquote>
+<ul>
+<li><p class="first"><em>arities</em> &#8211; A dictionary where a key is a symbol and the value is the arity</p>
+</li>
+<li><p class="first"><em>terminals</em> &#8211; A list of strings(symbols) with arity 0</p>
+</li>
+<li><p class="first"><em>functions</em> &#8211; A list of strings(symbols) with arity &gt; 0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">Symbols used for GP individuals</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.get_test_and_train_data">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_test_and_train_data</tt><big>(</big><em>fitness_cases_file</em>, <em>test_train_split</em><big>)</big><a class="headerlink" href="#pony_gp.get_test_and_train_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return test and train data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fitness_cases_file</strong> (<em>str</em>) &#8211; CSV file with a header.</li>
+<li><strong>test_train_split</strong> (<em>float</em>) &#8211; Percentage of exemplar data used for training</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Test and train data. Both cases and targets</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.grow">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">grow</tt><big>(</big><em>node</em>, <em>depth</em>, <em>max_depth</em>, <em>full</em>, <em>symbols</em><big>)</big><a class="headerlink" href="#pony_gp.grow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively grow a node to max depth in a pre-order, i.e. depth-first
+left-to-right traversal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>node</strong> (<em>list</em>) &#8211; Root node of subtree</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; Current tree depth</li>
+<li><strong>max_depth</strong> (<em>int</em>) &#8211; Maximum tree depth</li>
+<li><strong>full</strong> (<em>bool</em>) &#8211; grows the tree to max depth when true</li>
+<li><strong>symbols</strong> (<em>dict</em>) &#8211; set of symbols to chose from</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.initialize_population">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">initialize_population</tt><big>(</big><em>param</em><big>)</big><a class="headerlink" href="#pony_gp.initialize_population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ramped half-half initialization. The individuals in the
+population are initialized using the grow or the full method for
+each depth value (ramped) up to max_depth.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>param</strong> (<em>dict</em>) &#8211; parameters for pony gp</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of individuals</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.main">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#pony_gp.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search. Evaluate best solution on out-of-sample data</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.out_of_sample_test">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">out_of_sample_test</tt><big>(</big><em>individual</em>, <em>fitness_cases</em>, <em>targets</em><big>)</big><a class="headerlink" href="#pony_gp.out_of_sample_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Out-of-sample test on an individual solution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>individual</strong> (<em>dict</em>) &#8211; Solution to test on data</li>
+<li><strong>fitness_cases</strong> (<em>list</em>) &#8211; Input data used for testing</li>
+<li><strong>targets</strong> (<em>list</em>) &#8211; Target values of data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.parse_exemplars">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">parse_exemplars</tt><big>(</big><em>file_name</em><big>)</big><a class="headerlink" href="#pony_gp.parse_exemplars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a CSV file. Parse the fitness case and split the data into
+Test and train data. In the fitness case file each row is an exemplar
+and each dimension is in a column. The last column is the target value of
+the exemplar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> (<em>str</em>) &#8211; CSV file with header</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Fitness cases and targets</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.print_stats">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">print_stats</tt><big>(</big><em>generation</em>, <em>individuals</em><big>)</big><a class="headerlink" href="#pony_gp.print_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the statistics for the generation and population.</p>
+<p>:param generation:generation number
+:type generation: int
+:param individuals: population to get statistics for
+:type individuals: list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.replace_subtree">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">replace_subtree</tt><big>(</big><em>new_subtree</em>, <em>old_subtree</em><big>)</big><a class="headerlink" href="#pony_gp.replace_subtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace a subtree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>new_subtree</strong> (<em>list</em>) &#8211; The new subtree</li>
+<li><strong>old_subtree</strong> (<em>list</em>) &#8211; The old subtree</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.run">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">run</tt><big>(</big><em>param</em><big>)</big><a class="headerlink" href="#pony_gp.run" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Return the best solution. Create an initial
+population. Perform an evolutionary search.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>param</strong> &#8211; parameters for pony gp
+:type param: dict
+:returns: Best solution
+:rtype: dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.search_loop">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">search_loop</tt><big>(</big><em>population</em>, <em>param</em><big>)</big><a class="headerlink" href="#pony_gp.search_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the best individual from the evolutionary search
+loop. Starting from the initial population.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>population</strong> (<em>list</em>) &#8211; Initial population of individuals</li>
+<li><strong>param</strong> (<em>dict</em>) &#8211; parameters for pony gp</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best individual</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Individual</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.sort_population">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">sort_population</tt><big>(</big><em>individuals</em><big>)</big><a class="headerlink" href="#pony_gp.sort_population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list sorted on the fitness value of the individuals in
+the population. Descending order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>individuals</strong> (<em>list</em>) &#8211; The population of individuals</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">THe population of individuals sorted by fitness in descending order</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.subtree_crossover">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">subtree_crossover</tt><big>(</big><em>parent1</em>, <em>parent2</em>, <em>param</em><big>)</big><a class="headerlink" href="#pony_gp.subtree_crossover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns two individuals. The individuals are created by
+selecting two random nodes from the parents and swapping the
+subtrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parent1</strong> (<em>dict</em>) &#8211; Parent one to crossover</li>
+<li><strong>parent2</strong> (<em>dict</em>) &#8211; Parent two to crossover</li>
+<li><strong>param</strong> (<em>dict</em>) &#8211; parameters for pony gp</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Children from the crossed over parents</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.subtree_mutation">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">subtree_mutation</tt><big>(</big><em>individual</em>, <em>param</em><big>)</big><a class="headerlink" href="#pony_gp.subtree_mutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new individual by randomly picking a node and growing a
+new subtree from it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>individual</strong> (<em>dict</em>) &#8211; Individual to mutate</li>
+<li><strong>param</strong> (<em>dict</em>) &#8211; parameters for pony gp</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Mutated individual</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.tournament_selection">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">tournament_selection</tt><big>(</big><em>population</em>, <em>param</em><big>)</big><a class="headerlink" href="#pony_gp.tournament_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return individuals from a population by drawing
+<cite>tournament_size</cite> competitors randomly and selecting the best
+of the competitors. <cite>population_size</cite> number of tournaments are
+held.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>population</strong> (<em>list</em>) &#8211; Population to select from</li>
+<li><strong>param</strong> (<em>dict</em>) &#8211; parameters for pony gp</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">selected individuals</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="about.html"
+                        title="previous chapter">About <strong>Pony GP</strong></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="oop_pony_gp.html"
+                        title="next chapter">oop_pony_gp module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pony_gp.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="oop_pony_gp.html" title="oop_pony_gp module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="about.html" title="About Pony GP"
+             >previous</a> |</li>
+        <li><a href="index.html">EC-Stable 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Erik Hemberg.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

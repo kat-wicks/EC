@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Running experiments with Pony GP &mdash; EC-Stable 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="EC-Stable 1 documentation" href="index.html" />
+    <link rel="next" title="Glossary" href="glossary.html" />
+    <link rel="prev" title="oop_pony_gp module" href="oop_pony_gp.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="glossary.html" title="Glossary"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="oop_pony_gp.html" title="oop_pony_gp module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">EC-Stable 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="running-experiments-with-pony-gp">
+<h1>Running experiments with <strong>Pony GP</strong><a class="headerlink" href="#running-experiments-with-pony-gp" title="Permalink to this headline">¶</a></h1>
+<p>Description of how to run experiments with <strong>Pony GP</strong></p>
+<div class="section" id="stochastic-search-heuristics">
+<h2>Stochastic Search Heuristics<a class="headerlink" href="#stochastic-search-heuristics" title="Permalink to this headline">¶</a></h2>
+<p>A <em>heuristic</em> is a technique for solving a problem:</p>
+<ul class="simple">
+<li>quickly when other methods are too inefficient</li>
+<li>for finding an approximate solution when other methods fail to
+find any exact solution</li>
+</ul>
+<p>The <em>heuristic</em> achieves this by relaxing the:</p>
+<ul class="simple">
+<li>optimality, an optimal solution is not guaranteed</li>
+<li>completeness, all the optimal solutions might not be found</li>
+<li>accuracy, what are the accuracy of the solutions</li>
+<li>execution time, how fast is a solution returned</li>
+</ul>
+<div class="section" id="when-to-use-genetic-programming">
+<h3>When to use Genetic Programming<a class="headerlink" href="#when-to-use-genetic-programming" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Non-linear optimization and modelling<ul>
+<li>No analytic method</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="key-components">
+<h3>Key components<a class="headerlink" href="#key-components" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Representation</li>
+<li>Fitness function</li>
+<li>Implementation</li>
+</ul>
+</div>
+<div class="section" id="search-space-size">
+<h3>Search space size<a class="headerlink" href="#search-space-size" title="Permalink to this headline">¶</a></h3>
+<p>The search space of <strong>Pony GP</strong> is all the possible combinations of tree
+sizes and shapes up until max depth</p>
+</div>
+</div>
+<div class="section" id="design-of-s-pony-gp-experiment">
+<h2>Design of s Pony GP Experiment<a class="headerlink" href="#design-of-s-pony-gp-experiment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pony-gp-run">
+<h3><strong>Pony GP</strong> run<a class="headerlink" href="#pony-gp-run" title="Permalink to this headline">¶</a></h3>
+<p>A run refers to executing the Genetic Program once.</p>
+<ul class="simple">
+<li>Quality of best solution</li>
+<li>Statistics from the population as the search progresses over
+generations</li>
+</ul>
+<p>An example of output from a <strong>pony_gp.py</strong> run shows:</p>
+<ul class="simple">
+<li>the generation number <cite>Gen</cite></li>
+<li>average fitness plus/minus the standard deviation of the population
+<cite>fit_ave</cite></li>
+<li>the best individual&#8217;s fitness and bitstring <cite>Individual</cite></li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pony_gp</span><span class="o">.</span><span class="n">py</span>
+<span class="go">Reading: fitness_cases.csv headers: [&#39;#x0&#39;, &#39; x1&#39;, &#39; y&#39;]</span>
+<span class="go">(Namespace(crossover_probability=1.0, elite_size=1, fitness_cases=&#39;&#39;, generations=10, max_depth=3, mutation_probability=1.0, population_size=10, seed=0, test_train_split=0.7, tournament_size=2), {&#39;terminals&#39;: [&#39;1&#39;, &#39;x0&#39;, &#39;x1&#39;], &#39;arities&#39;: {&#39;+&#39;: 2, &#39;*&#39;: 2, &#39;-&#39;: 2, &#39;/&#39;: 2, &#39;1&#39;: 0, &#39;x0&#39;: 0, &#39;x1&#39;: 0}, &#39;functions&#39;: [&#39;+&#39;, &#39;*&#39;, &#39;-&#39;, &#39;/&#39;]})</span>
+<span class="go">Initial tree 0: [&#39;1&#39;]</span>
+<span class="go">Initial tree 1: [&#39;x0&#39;]</span>
+<span class="go">Initial tree 2: [&#39;/&#39;, [&#39;x1&#39;], [&#39;x0&#39;]]</span>
+<span class="go">Initial tree 3: [&#39;x0&#39;]</span>
+<span class="go">Initial tree 4: [&#39;-&#39;, [&#39;-&#39;, [&#39;1&#39;], [&#39;1&#39;]], [&#39;+&#39;, [&#39;x1&#39;], [&#39;x0&#39;]]]</span>
+<span class="go">Initial tree 5: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x1&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]]</span>
+<span class="go">Initial tree 6: [&#39;x0&#39;]</span>
+<span class="go">Initial tree 7: [&#39;1&#39;]</span>
+<span class="go">Initial tree 8: [&#39;x1&#39;]</span>
+<span class="go">Initial tree 9: [&#39;x0&#39;]</span>
+<span class="go">Gen:10 fit_ave:-118.28+-60.645 size_ave:5.60+-4.104 depth_ave:1.40+-1.020 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x1&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -4.444444444444445}</span>
+<span class="go">Gen:10 fit_ave:-131.41+-77.873 size_ave:6.40+-5.869 depth_ave:1.50+-1.285 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x1&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -4.444444444444445}</span>
+<span class="go">Gen:10 fit_ave:-133.52+-88.737 size_ave:8.80+-4.936 depth_ave:2.10+-0.943 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Gen:10 fit_ave:-116.36+-97.278 size_ave:10.60+-4.454 depth_ave:2.40+-0.917 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Gen:10 fit_ave:-74.52+-76.723 size_ave:14.20+-3.487 depth_ave:3.10+-0.539 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Gen:10 fit_ave:-99.64+-73.270 size_ave:14.20+-4.665 depth_ave:3.00+-0.894 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Gen:10 fit_ave:-109.39+-51.433 size_ave:17.80+-5.381 depth_ave:3.70+-1.005 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Gen:10 fit_ave:-52.65+-43.125 size_ave:16.40+-1.800 depth_ave:3.50+-0.671 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Gen:10 fit_ave:-34.14+-43.750 size_ave:15.40+-2.332 depth_ave:3.20+-0.400 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x1&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Gen:10 fit_ave:-103.69+-80.140 size_ave:15.80+-7.277 depth_ave:3.30+-1.100 {&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Best train:{&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -1.8888888888888888}</span>
+<span class="go">Best test:{&#39;genome&#39;: [&#39;/&#39;, [&#39;+&#39;, [&#39;*&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;x0&#39;]]], [&#39;/&#39;, [&#39;-&#39;, [&#39;x0&#39;], [&#39;x1&#39;]], [&#39;*&#39;, [&#39;x0&#39;], [&#39;1&#39;]]]], &#39;fitness&#39;: -0.0}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pony-gp-experiment">
+<h3><strong>Pony GP</strong> experiment<a class="headerlink" href="#pony-gp-experiment" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Pick symbols and operators</li>
+<li>Set parameters<ul>
+<li>Number of fitness evaluations - magnitude of search<ul>
+<li>Population size - how many solutions to evaluate in parallel</li>
+<li>Max iterations - how many generations the population will be
+modified</li>
+</ul>
+</li>
+<li>Number of variations - variation frequency,<ul>
+<li>Mutation probability - amplitude and search bias is determined by the operator</li>
+<li>Crossover probability - amplitude and search bias is determined by the operator</li>
+</ul>
+</li>
+<li>Selection pressure - convergence speed of search<ul>
+<li>Selection operator<ul>
+<li>Tournament size</li>
+<li>Elite size - how many solutions are preserved between generations</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Determine the stability of search parameters, the evolutionary search is
+stochastic. Perform a number of independent runs to gain confidence
+in the results</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Running experiments with <strong>Pony GP</strong></a><ul>
+<li><a class="reference internal" href="#stochastic-search-heuristics">Stochastic Search Heuristics</a><ul>
+<li><a class="reference internal" href="#when-to-use-genetic-programming">When to use Genetic Programming</a></li>
+<li><a class="reference internal" href="#key-components">Key components</a></li>
+<li><a class="reference internal" href="#search-space-size">Search space size</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#design-of-s-pony-gp-experiment">Design of s Pony GP Experiment</a><ul>
+<li><a class="reference internal" href="#pony-gp-run"><strong>Pony GP</strong> run</a></li>
+<li><a class="reference internal" href="#pony-gp-experiment"><strong>Pony GP</strong> experiment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="oop_pony_gp.html"
+                        title="previous chapter">oop_pony_gp module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="glossary.html"
+                        title="next chapter">Glossary</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/ea_experiments.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="glossary.html" title="Glossary"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="oop_pony_gp.html" title="oop_pony_gp module"
+             >previous</a> |</li>
+        <li><a href="index.html">EC-Stable 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Erik Hemberg.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
