@@ -297,7 +297,6 @@ def find_and_replace_subtree(root, subtree, node_idx, idx):
 
     # Check if index is a the given node
     if node_idx == idx:
-        print('B', root, subtree)
         # Remove the root node
         del root[:]
         # Reverse the subtree
@@ -305,7 +304,6 @@ def find_and_replace_subtree(root, subtree, node_idx, idx):
         # Insert the subtree at the root node
         for node in subtree:
             root.insert(0, node)
-        print('A', root)
     else:
         # Iterate over the children
         for child in root[1:]:
@@ -971,11 +969,11 @@ def parse_arguments():
     # Probability of crossover
     parser.add_option("--cp", "--crossover_probability", type=float,
                         dest="crossover_probability",
-                        default=0.0, help="crossover probability")
+                        default=0.8, help="crossover probability")
     # Probability of mutation
     parser.add_option("--mp", "--mutation_probability", type=float,
                         dest="mutation_probability",
-                        default=1.0, help="mutation probability")
+                        default=0.1, help="mutation probability")
     # Fitness case file
     parser.add_option("--fc", "--fitness_cases", default="fitness_cases.csv",
                         dest="fitness_cases",
