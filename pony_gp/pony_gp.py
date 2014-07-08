@@ -255,6 +255,41 @@ def get_depth_from_index(node, idx, node_idx, depth, idx_depth):
     return idx_depth, idx
 
 
+def get_nodes_with_equal_arity(root, arity, nodes, idx, arities):
+    """
+    Return the number of nodes and nodes with equal arity. Depth-first
+    left-to-right traversal searching for nodes of a given arity
+
+    :param root: Root of the tree
+    :type root: list
+    :param arity: Arity we are searching for
+    :type arity: int
+    :param nodes: Nodes with the given arity
+    :type nodes: list
+    :param idx: Current index
+    :type idx: int
+    :param arities: Dictionary of the symbols and their corresponding arities
+    :type arities: dict
+    :return: Number of nodes and nodes with a given arity
+    :rtype: tuple
+    """
+
+    # Increase the current index
+    idx += 1
+    # Check if symbol has the given arity
+    if arities[root[0]] == arity:
+        # Append node to the list of symbols with equal arities
+        nodes.append(root)
+
+    # Iterate over the children
+    for child in root[1:]:
+        # Recursively call the child
+        idx, nodes = get_nodes_with_equal_arity(child, arity, nodes, idx,
+                                                arities)
+
+    return idx, nodes
+
+
 def replace_subtree(new_subtree, old_subtree):
     """
     Replace a subtree.
@@ -657,41 +692,6 @@ def subtree_mutation(individual, param):
     return new_individual
 
 
-def get_nodes_with_equal_arity(root, arity, nodes, idx, arities):
-    """
-    Return the number of nodes and nodes with equal arity. Depth-first
-    left-to-right traversal searching for nodes of a given arity
-
-    :param root: Root of the tree
-    :type root: list
-    :param arity: Arity we are searching for
-    :type arity: int
-    :param nodes: Nodes with the given arity
-    :type nodes: list
-    :param idx: Current index
-    :type idx: int
-    :param arities: Dictionary of the symbols and their corresponding arities
-    :type arities: dict
-    :return: Number of nodes and nodes with a given arity
-    :rtype: tuple
-    """
-
-    # Increase the current index
-    idx += 1
-    # Check if symbol has the given arity
-    if arities[root[0]] == arity:
-        # Append node to the list of symbols with equal arities
-        nodes.append(root)
-
-    # Iterate over the children
-    for child in root[1:]:
-        # Recursively call the child
-        idx, nodes = get_nodes_with_equal_arity(child, arity, nodes, idx,
-                                                arities)
-
-    return idx, nodes
-
-
 def subtree_crossover(parent1, parent2, param):
     """
     Returns two individuals. The individuals are created by
@@ -718,14 +718,10 @@ def subtree_crossover(parent1, parent2, param):
                   })
 
     # Check if offspring will be crossed over
-    if random.random() < param["crossover_probability"] and \
-                    len(offsprings[0]["genome"]) > 1 and \
-                    len(offsprings[0]["genome"]) > 0:
+    if random.random() < param["crossover_probability"]:
         # Pick a crossover point
-        node_idx = random.randint(0,
-                                  get_number_of_nodes(offsprings[0]["genome"],
-                                                      0) - 1
-        )
+        end_node_idx = get_number_of_nodes(offsprings[0]["genome"], 0) - 1
+        node_idx = random.randint(0, end_node_idx)
         offspring_0_node = get_node_at_index(offsprings[0]["genome"],
                                              node_idx)
         # Only crossover internal nodes, not only leaves
