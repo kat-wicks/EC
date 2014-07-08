@@ -119,14 +119,27 @@ def grow(node, depth, max_depth, full, symbols):
 
     # grow is called recursively in the loop. The loop iterates arity number
     # of times. The arity is given by the node symbol
-    symbol = node[0]
-    for i in range(symbols["arities"][symbol]):
+    node_symbol = node[0]
+    for i in range(symbols["arities"][node_symbol]):
         # Get a random symbol
-        new_symbol = get_random_symbol(depth, max_depth, symbols, full)
+        symbol = get_random_symbol(depth, max_depth, symbols, full)
         # Create a child node and append it to the tree
-        new_node = append_node(node, new_symbol)
+        new_node = append_node(node, symbol)
         # Call grow with the child node as the current node
         grow(new_node, depth + 1, max_depth, full, symbols)
+
+
+def get_children(node):
+    """
+    Return the children of the node. The children are all the elements of the
+    except the first
+    :param node: The node
+    :type node: list
+    :return: The children of the node
+    :rtype: list
+    """
+    # Take a slice of the list except the head
+    return node[1:]
 
 
 def get_number_of_nodes(root, cnt):
@@ -146,7 +159,7 @@ def get_number_of_nodes(root, cnt):
     # Increase the count
     cnt += 1
     # Iterate over the children
-    for child in root[1:]:
+    for child in get_children(root):
         # Recursively count the child nodes
         cnt = get_number_of_nodes(child, cnt)
 
@@ -180,7 +193,7 @@ def get_node_at_index(root, idx):
         # Add the children of the node to the stack
         if len(node) > 0:
             # Get the children
-            children = node[1:]
+            children = get_children(node)
             # Reverse the children before appending them to the stack
             children.reverse()
             # Add children to the stack
@@ -211,7 +224,7 @@ def get_max_tree_depth(node, depth, max_depth):
         max_depth = depth
 
     # Traverse the children of the root node
-    for child in node[1:]:
+    for child in get_children(node):
         # Increase the depth
         depth += 1
         # Recursively get the depth of the child node
@@ -246,7 +259,7 @@ def get_depth_from_index(node, idx, node_idx, depth, idx_depth):
         idx_depth = depth
 
     # Iterate over the children
-    for child in node[1:]:
+    for child in get_children(node):
         # Increase the depth
         depth += 1
         # Recursively check the child depth and node index
@@ -256,41 +269,6 @@ def get_depth_from_index(node, idx, node_idx, depth, idx_depth):
         depth -= 1
 
     return idx_depth, idx
-
-
-def get_nodes_with_equal_arity(root, arity, nodes, idx, arities):
-    """
-    Return the number of nodes and nodes with equal arity. Depth-first
-    left-to-right traversal searching for nodes of a given arity
-
-    :param root: Root of the tree
-    :type root: list
-    :param arity: Arity we are searching for
-    :type arity: int
-    :param nodes: Nodes with the given arity
-    :type nodes: list
-    :param idx: Current index
-    :type idx: int
-    :param arities: Dictionary of the symbols and their corresponding arities
-    :type arities: dict
-    :return: Number of nodes and nodes with a given arity
-    :rtype: tuple
-    """
-
-    # Increase the current index
-    idx += 1
-    # Check if symbol has the given arity
-    if arities[root[0]] == arity:
-        # Append node to the list of symbols with equal arities
-        nodes.append(root)
-
-    # Iterate over the children
-    for child in root[1:]:
-        # Recursively call the child
-        idx, nodes = get_nodes_with_equal_arity(child, arity, nodes, idx,
-                                                arities)
-
-    return idx, nodes
 
 
 def replace_subtree(new_subtree, old_subtree):
@@ -344,7 +322,7 @@ def find_and_replace_subtree(root, subtree, node_idx, idx):
             root.insert(0, node)
     else:
         # Iterate over the children
-        for child in root[1:]:
+        for child in get_children(root):
             # Recursively travers the child
             idx = find_and_replace_subtree(child, subtree, node_idx, idx)
 
@@ -424,10 +402,7 @@ def evaluate_individual(individual, fitness_cases, targets):
     :type fitness_cases: list
     :param targets: Output corresponding to the input
     :type targets: list
-
     """
-
-    #TODO tidy up grow, fix crossover.
 
     # Initial fitness value
     fitness = 0.0
@@ -454,6 +429,7 @@ def evaluate(node, case):
     :returns: Value of the evaluation
     :rtype: float
     """
+
     symbol = node[0]
     # Identify the node symbol
     if symbol == "+":
@@ -703,6 +679,8 @@ def subtree_crossover(parent1, parent2, param):
     selecting two random nodes from the parents and swapping the
     subtrees.
 
+    # TODO control the depth of the child nodes
+
     :param parent1: Parent one to crossover
     :type parent1: dict
     :param parent2: Parent two to crossover
@@ -724,33 +702,23 @@ def subtree_crossover(parent1, parent2, param):
 
     # Check if offspring will be crossed over
     if random.random() < param["crossover_probability"]:
-        # Pick a crossover point
-        end_node_idx = get_number_of_nodes(offsprings[0]["genome"], 0) - 1
-        node_idx = random.randint(0, end_node_idx)
-        offspring_0_node = get_node_at_index(offsprings[0]["genome"],
-                                             node_idx)
-        # Only crossover internal nodes, not only leaves
-        crossover_point_symbol = offspring_0_node[0]
-        if crossover_point_symbol in param["symbols"]["functions"]:
-            # Get the nodes from the second offspring
-            cnt, possible_nodes = \
-                get_nodes_with_equal_arity(offsprings[1]["genome"],
-                                           param["symbols"]["arities"][
-                                               crossover_point_symbol],
-                    [], -1, param["symbols"]["arities"])
+        xo_nodes = []
+        for i, offspring in enumerate(offsprings):
+            # Pick a crossover point
+            end_node_idx = get_number_of_nodes(offsprings[i]["genome"], 0) - 1
+            node_idx = random.randint(0, end_node_idx)
+            # Find the subtree at the crossover point
+            xo_nodes.append(get_node_at_index(offsprings[i]["genome"],
+                                              node_idx))
 
-            # Pick a crossover point in the second offspring
-            if possible_nodes:
-                # Pick the second crossover point
-                offspring_1_node = random.choice(possible_nodes)
-                # Swap the children of the nodes
-                tmp_offspring_1_node = copy.deepcopy(offspring_1_node)
-                # Copy the children from the subtree of the first offspring
-                # to the chosen node of the second offspring
-                replace_subtree(offspring_0_node, offspring_1_node)
-                # Copy the children from the subtree of the second offspring
-                # to the chosen node of the first offspring
-                replace_subtree(tmp_offspring_1_node, offspring_0_node)
+        # Swap the nodes
+        tmp_offspring_1_node = copy.deepcopy(xo_nodes[1])
+        # Copy the children from the subtree of the first offspring
+        # to the chosen node of the second offspring
+        replace_subtree(xo_nodes[0], xo_nodes[1])
+        # Copy the children from the subtree of the second offspring
+        # to the chosen node of the first offspring
+        replace_subtree(tmp_offspring_1_node, xo_nodes[0])
 
     # Return the offsprings
     return offsprings
