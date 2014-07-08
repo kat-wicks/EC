@@ -85,17 +85,20 @@ DEFAULT_FITNESS = -1000
 
 def append_node(node, symbol):
     """
-    Append a symbol to the node.
+    Return the appended node. Append a symbol to the node.
 
     :param node: The node that will be appended to
     :type node: list
     :param symbol: The symbol that is appended
     :type symbol: str
+    :return: The new node
+    :rtype: list
     """
 
     # Create a list with the symbol and append it to the node
-    node.append([symbol])
-
+    new_node = [symbol]
+    node.append(new_node)
+    return new_node
 
 def grow(node, depth, max_depth, full, symbols):
     """
@@ -116,14 +119,14 @@ def grow(node, depth, max_depth, full, symbols):
 
     # grow is called recursively in the loop. The loop iterates arity number
     # of times. The arity is given by the node symbol
-    for _ in range(symbols["arities"][node[0]]):
+    symbol = node[0]
+    for i in range(symbols["arities"][symbol]):
         # Get a random symbol
-        symbol = get_random_symbol(depth, max_depth, symbols, full)
+        new_symbol = get_random_symbol(depth, max_depth, symbols, full)
         # Create a child node and append it to the tree
-        append_node(node, symbol)
+        new_node = append_node(node, new_symbol)
         # Call grow with the child node as the current node
-        current_node = node[-1]
-        grow(current_node, depth + 1, max_depth, full, symbols)
+        grow(new_node, depth + 1, max_depth, full, symbols)
 
 
 def get_number_of_nodes(root, cnt):
@@ -423,6 +426,8 @@ def evaluate_individual(individual, fitness_cases, targets):
     :type targets: list
 
     """
+
+    #TODO tidy up grow, fix crossover.
 
     # Initial fitness value
     fitness = 0.0
