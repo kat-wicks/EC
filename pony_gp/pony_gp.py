@@ -901,7 +901,8 @@ def get_test_and_train_data(fitness_cases_file, test_train_split):
     test_cases = fitness_cases[split_idx:]
     training_targets = targets[:split_idx]
     test_targets = targets[split_idx:]
-    return (test_cases, test_targets), (training_cases, training_targets)
+    return ({"fitness_cases": test_cases, "targets": test_targets},
+            {"fitness_cases": training_cases, "targets": training_targets})
 
 
 def parse_arguments():
@@ -979,12 +980,12 @@ def main():
     # Get the namespace dictionary
     param = vars(args)
     param["symbols"] = symbols
-    param["fitness_cases"] = train[0]
-    param["targets"] = train[1]
+    param["fitness_cases"] = train["fitness_cases"]
+    param["targets"] = train["targets"]
     best_ever = run(param)
     print("Best train:" + str(best_ever))
     # Test on out-of-sample data
-    out_of_sample_test(best_ever, test[0], test[1])
+    out_of_sample_test(best_ever, test["fitness_cases"], test["targets"])
 
 
 def out_of_sample_test(individual, fitness_cases, targets):
