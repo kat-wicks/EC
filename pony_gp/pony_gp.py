@@ -24,11 +24,11 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 import csv
+import optparse
 
 import random
 import math
 import copy
-import argparse
 
 """
 
@@ -297,14 +297,15 @@ def find_and_replace_subtree(root, subtree, node_idx, idx):
 
     # Check if index is a the given node
     if node_idx == idx:
+        print('B', root, subtree)
         # Remove the root node
-        root.pop(0)
+        del root[:]
         # Reverse the subtree
         subtree.reverse()
         # Insert the subtree at the root node
         for node in subtree:
             root.insert(0, node)
-
+        print('A', root)
     else:
         # Iterate over the children
         for child in root[1:]:
@@ -936,51 +937,66 @@ def get_test_and_train_data(fitness_cases_file, test_train_split):
     return (test_cases, test_targets), (training_cases, training_targets)
 
 
-def main():
-    """Search. Evaluate best solution on out-of-sample data"""
+def parse_arguments():
+    """
+    Returns a dictionary of the default parameters, or the ones set by
+    commandline arguments
 
+    :return: parameters for the GP run
+    :rtype: dict
+    """
     # Command line arguments
-    parser = argparse.ArgumentParser()
+    parser = optparse.OptionParser()
     # Population size
-    parser.add_argument("-p", "--population_size", type=int, default=10,
-                        help="population size")
+    parser.add_option("-p", "--population_size", type=int, default=10,
+                        dest="population_size", help="population size")
     # Size of an individual
-    parser.add_argument("-m", "--max_depth", type=int, default=3,
-                        help="Max depth of tree")
+    parser.add_option("-m", "--max_depth", type=int, default=3,
+                        dest="max_depth", help="Max depth of tree")
     # Number of elites, i.e. the top solution from the old population
     # transferred to the new population
-    parser.add_argument("-e", "--elite_size", type=int, default=1,
-                        help="elite size")
+    parser.add_option("-e", "--elite_size", type=int, default=1,
+                         dest="elite_size", help="elite size")
     # Generations is the number of times the EA will iterate the search loop
-    parser.add_argument("-g", "--generations", type=int, default=10,
-                        help="number of generations")
+    parser.add_option("-g", "--generations", type=int, default=10,
+                         dest="generations", help="number of generations")
     # Tournament size
-    parser.add_argument("-ts", "--tournament_size", type=int, default=2,
-                        help="tournament size")
+    parser.add_option("--ts", "--tournament_size", type=int, default=2,
+                         dest="tournament_size", help="tournament size")
     # Random seed. Used to allow replication of runs of the EA. The search is
     # stochastic and and replication of the results can be guaranteed by using
     # the same random seed
-    parser.add_argument("-s", "--seed", type=int, default=0,
-                        help="seed number")
+    parser.add_option("-s", "--seed", type=int, default=0,
+                        dest="seed", help="seed number")
     # Probability of crossover
-    parser.add_argument("-cp", "--crossover_probability", type=float,
-                        default=1.0, help="crossover probability")
+    parser.add_option("--cp", "--crossover_probability", type=float,
+                        dest="crossover_probability",
+                        default=0.0, help="crossover probability")
     # Probability of mutation
-    parser.add_argument("-mp", "--mutation_probability", type=float,
+    parser.add_option("--mp", "--mutation_probability", type=float,
+                        dest="mutation_probability",
                         default=1.0, help="mutation probability")
     # Fitness case file
-    parser.add_argument("-fc", "--fitness_cases", default="",
+    parser.add_option("--fc", "--fitness_cases", default="fitness_cases.csv",
+                        dest="fitness_cases",
                         help="fitness cases file")
     # Test-training data split
-    parser.add_argument("-tts", "--test_train_split", type=float, default=0.7,
+    parser.add_option("--tts", "--test_train_split", type=float, default=0.7,
+                        dest="test_train_split",
                         help="test-train data split")
     # Parse the command line arguments
-    args = parser.parse_args()
+    options, args = parser.parse_args()
+    return options
 
+
+def main():
+    """Search. Evaluate best solution on out-of-sample data"""
+
+    args = parse_arguments()
     # Set arguments
     seed = args.seed
     test_train_split = args.test_train_split
-    fitness_cases_file = 'fitness_cases.csv'  # args.fitness_cases
+    fitness_cases_file = args.fitness_cases
 
     test, train = get_test_and_train_data(fitness_cases_file, test_train_split)
 

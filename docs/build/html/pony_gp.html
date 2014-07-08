@@ -23,7 +23,10 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="EC-Stable 1 documentation" href="index.html" /> 
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="EC-Stable 1 documentation" href="index.html" />
+    <link rel="next" title="oop_pony_gp module" href="oop_pony_gp.html" />
+    <link rel="prev" title="About Pony GP" href="about.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,6 +38,12 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="oop_pony_gp.html" title="oop_pony_gp module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="about.html" title="About Pony GP"
+             accesskey="P">previous</a> |</li>
         <li><a href="index.html">EC-Stable 1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -215,15 +224,26 @@ depth-first left-to-right traversal.</p>
 <dl class="function">
 <dt id="pony_gp.get_max_tree_depth">
 <tt class="descclassname">pony_gp.</tt><tt class="descname">get_max_tree_depth</tt><big>(</big><em>node</em>, <em>depth</em>, <em>max_depth</em><big>)</big><a class="headerlink" href="#pony_gp.get_max_tree_depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the max depth of the tree. Recursively traverse the tree
-:param node: Root of the tree
-:type node: list
-:param depth: Current tree depth
-:type depth: int
-:param max_depth: Maximum depth of the tree
-:type max_depth: int
-:return: Maximum depth of the tree
-:rtype: int</p>
+<dd><p>Return the max depth of the tree. Recursively traverse the tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>list</em>) &#8211; Root of the tree</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; Current tree depth</li>
+<li><strong>max_depth</strong> (<em>int</em>) &#8211; Maximum depth of the tree</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Maximum depth of the tree</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -241,13 +261,15 @@ according to a depth-first left-to-right ordering.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Node at the given index (based on depth-first left-to-right</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Node at the given index (based on depth-first left-to-right
+indexing)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>indexing)
-:rtype: list</p>
 </dd></dl>
 
 <dl class="function">
@@ -283,7 +305,6 @@ left-to-right traversal searching for nodes of a given arity</p>
 <tt class="descclassname">pony_gp.</tt><tt class="descname">get_number_of_nodes</tt><big>(</big><em>root</em>, <em>cnt</em><big>)</big><a class="headerlink" href="#pony_gp.get_number_of_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of nodes in the tree. A recursive depth-first
 left-to-right search is done</p>
-<p>#TODO can be made non-recursive for improve readability</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -314,21 +335,23 @@ until the max depth. The symbols is picked with a uniform probability.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>depth</strong> (<em>int</em>) &#8211; Current depth</li>
-<li><strong>max_depth</strong> &#8211; Max depth determines if a function symbol can be</li>
+<li><strong>max_depth</strong> (<em>int</em>) &#8211; Max depth determines if a function symbol can be
+chosen. I.e. a symbol with arity greater than zero</li>
+<li><strong>symbols</strong> (<em>dict</em>) &#8211; The possible symbols.</li>
+<li><strong>full</strong> &#8211; True if function symbols should be drawn until max depth</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A random symbol</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>chosen. I.e. a symbol with arity greater than zero
-:type max_depth: int
-:param symbols: The possible symbols.
-:type symbols: dict
-:param full: True if function symbols should be drawn until max depth
-:returns: A random symbol
-:rtype: str</p>
 </dd></dl>
 
 <dl class="function">
@@ -445,6 +468,23 @@ each depth value (ramped) up to max_depth.</p>
 <li><strong>targets</strong> (<em>list</em>) &#8211; Target values of data</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.parse_arguments">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">parse_arguments</tt><big>(</big><big>)</big><a class="headerlink" href="#pony_gp.parse_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of the default parameters, or the ones set by
+commandline arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">parameters for the GP run</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
 </tbody>
 </table>
@@ -649,6 +689,12 @@ held.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="about.html"
+                        title="previous chapter">About <strong>Pony GP</strong></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="oop_pony_gp.html"
+                        title="next chapter">oop_pony_gp module</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/pony_gp.txt"
@@ -680,6 +726,12 @@ held.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="oop_pony_gp.html" title="oop_pony_gp module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="about.html" title="About Pony GP"
+             >previous</a> |</li>
         <li><a href="index.html">EC-Stable 1 documentation</a> &raquo;</li> 
       </ul>
     </div>
