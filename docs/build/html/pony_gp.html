@@ -58,15 +58,21 @@
 <dl class="function">
 <dt id="pony_gp.append_node">
 <tt class="descclassname">pony_gp.</tt><tt class="descname">append_node</tt><big>(</big><em>node</em>, <em>symbol</em><big>)</big><a class="headerlink" href="#pony_gp.append_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a symbol to the node.</p>
+<dd><p>Return the appended node. Append a symbol to the node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node</strong> (<em>list</em>) &#8211; The node that will be appended to</li>
 <li><strong>symbol</strong> (<em>str</em>) &#8211; The symbol that is appended</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The new node</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
 </td>
 </tr>
 </tbody>
@@ -194,6 +200,17 @@ population if they are better than the worst.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pony_gp.get_children">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">get_children</tt><big>(</big><em>node</em><big>)</big><a class="headerlink" href="#pony_gp.get_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the children of the node. The children are all the elements of the
+except the first
+:param node: The node
+:type node: list
+:return: The children of the node
+:rtype: list</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pony_gp.get_depth_from_index">
 <tt class="descclassname">pony_gp.</tt><tt class="descname">get_depth_from_index</tt><big>(</big><em>node</em>, <em>idx</em>, <em>node_idx</em>, <em>depth</em>, <em>idx_depth</em><big>)</big><a class="headerlink" href="#pony_gp.get_depth_from_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the depth of a node based on the index. The index is based on
@@ -266,34 +283,6 @@ indexing)</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pony_gp.get_nodes_with_equal_arity">
-<tt class="descclassname">pony_gp.</tt><tt class="descname">get_nodes_with_equal_arity</tt><big>(</big><em>root</em>, <em>arity</em>, <em>nodes</em>, <em>idx</em>, <em>arities</em><big>)</big><a class="headerlink" href="#pony_gp.get_nodes_with_equal_arity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the number of nodes and nodes with equal arity. Depth-first
-left-to-right traversal searching for nodes of a given arity</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>root</strong> (<em>list</em>) &#8211; Root of the tree</li>
-<li><strong>arity</strong> (<em>int</em>) &#8211; Arity we are searching for</li>
-<li><strong>nodes</strong> (<em>list</em>) &#8211; Nodes with the given arity</li>
-<li><strong>idx</strong> (<em>int</em>) &#8211; Current index</li>
-<li><strong>arities</strong> (<em>dict</em>) &#8211; Dictionary of the symbols and their corresponding arities</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Number of nodes and nodes with a given arity</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
 </td>
 </tr>
 </tbody>
@@ -608,6 +597,7 @@ the population. Descending order.</p>
 <dd><p>Returns two individuals. The individuals are created by
 selecting two random nodes from the parents and swapping the
 subtrees.</p>
+<p># TODO control the depth of the child nodes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
