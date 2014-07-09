@@ -100,6 +100,7 @@ def append_node(node, symbol):
     node.append(new_node)
     return new_node
 
+
 def grow(node, depth, max_depth, full, symbols):
     """
     Recursively grow a node to max depth in a pre-order, i.e. depth-first
@@ -386,7 +387,7 @@ def sort_population(individuals):
     return individuals
 
 
-def evaluate_individual(individual, fitness_cases, targets):
+def evaluate_individual(individual, fitness_cases, targets, symbols=None):
     """
     Evaluate fitness based on fitness cases and target values. Fitness
     cases are a set of exemplars (input and output points) by
@@ -396,6 +397,7 @@ def evaluate_individual(individual, fitness_cases, targets):
     Evaluates and sets the fitness in an individual. Fitness is the
     negative mean square error(MSE).
 
+    :param param:
     :param individual: Individual solution to evaluate
     :type individual: dict
     :param fitness_cases: Input for the evaluation
@@ -417,6 +419,92 @@ def evaluate_individual(individual, fitness_cases, targets):
 
     # Get the mean fitness and assign it to the individual
     individual["fitness"] = -fitness / float(len(targets))
+
+
+def evaluate_nodes(root, case, functions):
+    """
+    Return the float value from the evaluation of the nodes. Non-recursive
+    evaluation of the nodes. Depth first left-to-right traversal
+
+    This function can be called from evaluate_individual instead of evaluate.
+
+    :param root: Root of tree to evaluate
+    :type root: list
+    :param case: Current fitness case
+    :type case: list
+    :param functions: Function symbols (operators)
+    :type functions: list
+    :returns: Value of the evaluation
+    :rtype: float
+    """
+    import operator
+    # Unvisited nodes stack
+    unvisited_nodes = [root]
+    # Evaluation stack
+    evaluation_stack = []
+    # Breakout counter
+    breakout_cnt = 0
+    # Number of nodes in the tree
+    n_nodes = get_number_of_nodes(root, 0)
+    # Visit all the nodes in the tree and evaluate
+    while unvisited_nodes and breakout_cnt < n_nodes:
+        # Get unvisited node from the stack
+        current_node = unvisited_nodes.pop(-1)
+        # Add children to unvisited nodes stack
+        children = get_children(current_node)[:]
+        children.reverse()
+        unvisited_nodes.extend(children)
+        # Push current node to evaluation stack
+        value = current_node[0]
+        if value.startswith("x"):
+            # Get the value of the input variables
+            value = case[int(value[1:])]
+        elif value not in functions:
+            # Cast to a float
+            value = float(value)
+        # Push to evaluation stack
+        evaluation_stack.append(value)
+
+        # Loop over evaluation stack when there are enough values on it to
+        # evaluate and the two top elements are not operators
+        while len(evaluation_stack) > 2 and\
+                        evaluation_stack[-1] not in functions and \
+                        evaluation_stack[-2] not in functions:
+            # Get operands from the evaluation stack
+            operands = [evaluation_stack.pop(-1)]
+            operands.insert(0, evaluation_stack.pop(-1))
+            # Get operator from the evaluation stack
+            _operator = evaluation_stack.pop(-1)
+            if _operator == "+":
+                # Addition operator
+                value = operator.add(*operands)
+            elif _operator == "-":
+                # Subtraction operator
+                value = operator.sub(*operands)
+            elif _operator == "*":
+                # Multiplication operator
+                value = operator.mul(*operands)
+            elif _operator == "/":
+                # Protected division
+                try:
+                    value = operator.div(*operands)
+                except ZeroDivisionError as e:
+                    value = operands[0]
+            else:
+                # Unknown operator. Raise an exception
+                raise ValueError(_operator)
+            # Push the value from the operation to the evaluation stack
+            evaluation_stack.append(value)
+
+        # Increase the node breakout count
+        breakout_cnt += 1
+
+    # Assert that the value on the evaluation stack is a single value which
+    # is not a function
+    assert (len(evaluation_stack) == 1 and evaluation_stack[0] not in functions)
+
+    return evaluation_stack[0]
+
 
 def evaluate(node, case):
     """
@@ -513,8 +601,8 @@ def evaluate_fitness(individuals, param):
     # Iterate over all the individual solutions
     for ind in individuals:
         # Execute the fitness function
-        evaluate_individual(ind, param["fitness_cases"],
-                            param["targets"])
+        evaluate_individual(ind, param["fitness_cases"], param["targets"],
+                            param["symbols"])
 
 
 def search_loop(population, param):
@@ -654,8 +742,8 @@ def subtree_mutation(individual, param):
         # Get a new symbol
         max_subtree_depth = param["max_depth"] - node_depth
         new_subtree = [get_random_symbol(max_subtree_depth,
-                                      param["max_depth"],
-                                      param["symbols"])
+                                         param["max_depth"],
+                                         param["symbols"])
         ]
         # Grow tree if it was a function symbol
         if new_subtree[0] in param["symbols"]["functions"]:
@@ -917,41 +1005,41 @@ def parse_arguments():
     parser = optparse.OptionParser()
     # Population size
     parser.add_option("-p", "--population_size", type=int, default=10,
-                        dest="population_size", help="population size")
+                      dest="population_size", help="population size")
     # Size of an individual
     parser.add_option("-m", "--max_depth", type=int, default=3,
-                        dest="max_depth", help="Max depth of tree")
+                      dest="max_depth", help="Max depth of tree")
     # Number of elites, i.e. the top solution from the old population
     # transferred to the new population
     parser.add_option("-e", "--elite_size", type=int, default=1,
-                         dest="elite_size", help="elite size")
+                      dest="elite_size", help="elite size")
     # Generations is the number of times the EA will iterate the search loop
     parser.add_option("-g", "--generations", type=int, default=10,
-                         dest="generations", help="number of generations")
+                      dest="generations", help="number of generations")
     # Tournament size
     parser.add_option("--ts", "--tournament_size", type=int, default=2,
-                         dest="tournament_size", help="tournament size")
+                      dest="tournament_size", help="tournament size")
     # Random seed. Used to allow replication of runs of the EA. The search is
     # stochastic and and replication of the results can be guaranteed by using
     # the same random seed
     parser.add_option("-s", "--seed", type=int, default=0,
-                        dest="seed", help="seed number")
+                      dest="seed", help="seed number")
     # Probability of crossover
     parser.add_option("--cp", "--crossover_probability", type=float,
-                        dest="crossover_probability",
-                        default=0.8, help="crossover probability")
+                      dest="crossover_probability",
+                      default=0.8, help="crossover probability")
     # Probability of mutation
     parser.add_option("--mp", "--mutation_probability", type=float,
-                        dest="mutation_probability",
-                        default=0.1, help="mutation probability")
+                      dest="mutation_probability",
+                      default=0.1, help="mutation probability")
     # Fitness case file
     parser.add_option("--fc", "--fitness_cases", default="fitness_cases.csv",
-                        dest="fitness_cases",
-                        help="fitness cases file")
+                      dest="fitness_cases",
+                      help="fitness cases file")
     # Test-training data split
     parser.add_option("--tts", "--test_train_split", type=float, default=0.7,
-                        dest="test_train_split",
-                        help="test-train data split")
+                      dest="test_train_split",
+                      help="test-train data split")
     # Parse the command line arguments
     options, args = parser.parse_args()
     return options
@@ -965,9 +1053,9 @@ def main():
     seed = args.seed
     test_train_split = args.test_train_split
     fitness_cases_file = args.fitness_cases
-
+    # Get the exemplars
     test, train = get_test_and_train_data(fitness_cases_file, test_train_split)
-
+    # Get the symbols
     symbols = get_symbols()
 
     # Print EA settings
@@ -985,10 +1073,11 @@ def main():
     best_ever = run(param)
     print("Best train:" + str(best_ever))
     # Test on out-of-sample data
-    out_of_sample_test(best_ever, test["fitness_cases"], test["targets"])
+    out_of_sample_test(best_ever, test["fitness_cases"], test["targets"],
+                       param["symbols"])
 
 
-def out_of_sample_test(individual, fitness_cases, targets):
+def out_of_sample_test(individual, fitness_cases, targets, symbols):
     """
     Out-of-sample test on an individual solution
 
@@ -999,7 +1088,7 @@ def out_of_sample_test(individual, fitness_cases, targets):
     :param targets: Target values of data
     :type targets: list
     """
-    evaluate_individual(individual, fitness_cases, targets)
+    evaluate_individual(individual, fitness_cases, targets, symbols)
     print("Best test:" + str(individual))
 
 

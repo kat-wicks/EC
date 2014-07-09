@@ -123,7 +123,7 @@
 
 <dl class="function">
 <dt id="pony_gp.evaluate_individual">
-<tt class="descclassname">pony_gp.</tt><tt class="descname">evaluate_individual</tt><big>(</big><em>individual</em>, <em>fitness_cases</em>, <em>targets</em><big>)</big><a class="headerlink" href="#pony_gp.evaluate_individual" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">pony_gp.</tt><tt class="descname">evaluate_individual</tt><big>(</big><em>individual</em>, <em>fitness_cases</em>, <em>targets</em>, <em>symbols=None</em><big>)</big><a class="headerlink" href="#pony_gp.evaluate_individual" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate fitness based on fitness cases and target values. Fitness
 cases are a set of exemplars (input and output points) by
 comparing the error between the output of an individual(symbolic
@@ -135,10 +135,38 @@ negative mean square error(MSE).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>param</strong> &#8211; </li>
 <li><strong>individual</strong> (<em>dict</em>) &#8211; Individual solution to evaluate</li>
 <li><strong>fitness_cases</strong> (<em>list</em>) &#8211; Input for the evaluation</li>
 <li><strong>targets</strong> (<em>list</em>) &#8211; Output corresponding to the input</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pony_gp.evaluate_nodes">
+<tt class="descclassname">pony_gp.</tt><tt class="descname">evaluate_nodes</tt><big>(</big><em>root</em>, <em>case</em>, <em>functions</em><big>)</big><a class="headerlink" href="#pony_gp.evaluate_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the float value from the evaluation of the nodes. Non-recursive
+evaluation of the nodes. Depth first left-to-right traversal</p>
+<p>This function can be called from evaluate_individual instead of evaluate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root</strong> (<em>list</em>) &#8211; Root of tree to evaluate</li>
+<li><strong>case</strong> (<em>list</em>) &#8211; Current fitness case</li>
+<li><strong>functions</strong> (<em>list</em>) &#8211; Function symbols (operators)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Value of the evaluation</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
 </td>
 </tr>
 </tbody>
@@ -445,7 +473,7 @@ each depth value (ramped) up to max_depth.</p>
 
 <dl class="function">
 <dt id="pony_gp.out_of_sample_test">
-<tt class="descclassname">pony_gp.</tt><tt class="descname">out_of_sample_test</tt><big>(</big><em>individual</em>, <em>fitness_cases</em>, <em>targets</em><big>)</big><a class="headerlink" href="#pony_gp.out_of_sample_test" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">pony_gp.</tt><tt class="descname">out_of_sample_test</tt><big>(</big><em>individual</em>, <em>fitness_cases</em>, <em>targets</em>, <em>symbols</em><big>)</big><a class="headerlink" href="#pony_gp.out_of_sample_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Out-of-sample test on an individual solution</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
