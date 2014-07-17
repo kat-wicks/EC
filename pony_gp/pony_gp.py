@@ -648,7 +648,7 @@ def search_loop(population, param):
         population = generational_replacement(new_population, population,
                                               param)
         # Print the stats of the population
-        print_stats(param["generations"], population)
+        print_stats(generation, population)
 
         # Set best solution
         sort_population(population)
