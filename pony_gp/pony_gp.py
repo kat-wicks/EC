@@ -188,17 +188,16 @@ def get_node_at_index(root, idx):
     # Set the current index
     cnt = 0
     # Iterate over the tree until the index is reached
-    while cnt < idx:
+    while cnt <= idx and unvisited_nodes:
         # Take an unvisited node from the stack
         node = unvisited_nodes.pop()
         # Add the children of the node to the stack
-        if len(node) > 0:
-            # Get the children
-            children = get_children(node)
-            # Reverse the children before appending them to the stack
-            children.reverse()
-            # Add children to the stack
-            unvisited_nodes.extend(children)
+        # Get the children
+        children = get_children(node)
+        # Reverse the children before appending them to the stack
+        children.reverse()
+        # Add children to the stack
+        unvisited_nodes.extend(children)
 
         # Increase the current index
         cnt += 1
@@ -285,13 +284,9 @@ def replace_subtree(new_subtree, old_subtree):
 
     # Delete the nodes of the old subtree
     del old_subtree[:]
-    # Reverse the new subtree
-    new_subtree.reverse()
-    # Iterate over the nodes
     for node in new_subtree:
         # Insert the nodes in the new subtree
-        old_subtree.insert(0, copy.deepcopy(node))
-
+        old_subtree.append(copy.deepcopy(node))
 
 def find_and_replace_subtree(root, subtree, node_idx, idx):
     """
