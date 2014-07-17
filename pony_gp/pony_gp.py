@@ -259,6 +259,7 @@ def get_depth_from_index(node, idx, node_idx, depth, idx_depth):
     if node_idx == idx:
         idx_depth = depth
 
+    idx += 1
     # Iterate over the children
     for child in get_children(node):
         # Increase the depth
