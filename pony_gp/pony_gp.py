@@ -317,11 +317,9 @@ def find_and_replace_subtree(root, subtree, node_idx, idx):
     if node_idx == idx:
         # Remove the root node
         del root[:]
-        # Reverse the subtree
-        subtree.reverse()
         # Insert the subtree at the root node
         for node in subtree:
-            root.insert(0, node)
+            root.append(node)
     else:
         # Iterate over the children
         for child in get_children(root):
