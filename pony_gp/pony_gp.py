@@ -614,10 +614,14 @@ def search_loop(population, param):
 
     # Evaluate fitness
     evaluate_fitness(population, param)
-    best_ever = None
+    # Print the stats of the population
+    print_stats(0, population)
+    # Set best solution
+    sort_population(population)
+    best_ever = population[0]
 
     # Generation loop
-    generation = 0
+    generation = 1
     while generation < param["generations"]:
         new_population = []
         # Selection

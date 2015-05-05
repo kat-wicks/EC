@@ -1,0 +1,21 @@
+article, aside, details, figcaption, figure, footer, header, menu, nav, section {
+  display: block;
+}
+body {
+  background-color: #ffffff;
+}
+h1 {
+  font-size: 32px;
+}
+h1, p {
+  color: #000;
+  text-align: left;
+}
+#graph{
+    width: 1170px;
+    height: 500px;
+}
+#graphTest{
+    width: 1170px;
+    height: 500px;
+}

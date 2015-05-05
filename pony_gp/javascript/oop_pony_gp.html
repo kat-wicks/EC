@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>GP JS</title>
+    <link rel="stylesheet" href="pony_gp.css"/>
+    <link rel="stylesheet" href="jquery.handsontable.full.css"/>
+    <link rel="stylesheet" href="bootstrap.css"/>
+    <style type="text/css">
+        .functionToggle, .constantToggle, #otherConstants {
+            width: 100%;
+            margin-top: 0.5em;
+        }
+
+        section {
+            margin-top: 4em;
+        }
+    </style>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.flot.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="underscore.js"></script>
+    <script src="d3.v2.min.js"></script>
+    <script src="jquery.handsontable.full.js"></script>
+
+</head>
+<body>
+<h1>Pony GP (JS)</h1>
+<script type="text/javascript" src="oop_pony_gp.js"></script>
+
+<div class="container">
+    <section id="inputData">
+        <div class="page-header"><h1>Input Data</h1></div>
+        <p>Paste your data. The last column is the label.</p>
+
+        <div class="dataTable" id="dataInput"
+             style=" width:100%; min-height: 200px;"></div>
+    </section>
+
+    <section id="gpParams">
+        <div class="page-header"><h1>GP Parameters</h1></div>
+        <form id="gpParamsFrm">
+            <div class="row">
+                <div class="span3">
+                    Tournament size
+                    <br/>
+                    <input type="text" name="tournament_size" value="2"/>
+                </div>
+
+                <div class="span3">
+                    Crossover
+                    <br/>
+                    <input type="text" name="crossover_probability"
+                           value="0.5"/>
+                </div>
+
+                <div class="span3">
+                    Generations
+                    <br/>
+                    <input type="text" name="generations" value="10"/>
+                </div>
+            </div>
+            <div class="row" style="margin-top:0.5em;">
+                <div class="span3">
+                    Mutation
+                    <br/>
+                    <input type="text" name="mutation_probability"
+                           value="0.2"/>
+                </div>
+
+                <div class="span3">
+                    Population Size
+                    <br/>
+                    <input type="text" name="population_size" value="1000"/>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <button id="evolve" class="btn btn-primary"
+                style="width:50%; height: 50px; font-size: 2em;">Evolve
+        </button>
+    </section>
+
+    <section>
+        <div class="page-header"><h1>GP results</h1></div>
+        Best program:
+        <div class="prettyprint linenums" style="height:50px; overflow:scroll;">
+            <code id="bestProgram"></code></div>
+        Best Training Error:
+        <code id="bestTrainFitness"></code><br>
+        <div id="graph"></div>
+    </section>
+</div>
+<script>
+    // TODO fix size for mutation and crossover, it bloats too easily for mutation
+    var data = [
+        [1334.62, 1325.69],
+        [1328.51, 1314.41],
+        [1325.86, 1311.80],
+        [1323.72, 1313.87],
+        [1333.07, 1312.88],
+        [1342.00, 1330.67],
+        [1346.82, 1336.36],
+        [1341.82, 1326.59],
+        [1330.42, 1318.51],
+        [1343.33, 1327.32],
+        [1350.47, 1333.36],
+        [1351.05, 1332.03],
+        [1354.51, 1336.36],
+        [1359.44, 1348.34],
+        [1349.44, 1338.64],
+        [1354.36, 1335.58],
+        [1348.00, 1329.17],
+        [1355.90, 1341.50],
+        [1360.84, 1349.52],
+        [1370.58, 1358.59],
+    ];
+
+    $("#dataInput").handsontable({
+        data: data,
+        minSpareCols: 1,
+        minSpareRows: 1,
+        rowHeaders: true,
+        colHeaders: true
+    });
+
+    console.log($("#dataInput").data("handsontable").getData());
+
+    $("#evolve").click(function () {
+
+        var rawdata = $("#dataInput").data("handsontable").getData();
+        var nr_variables = _.initial(_.compact(rawdata[0])).length;
+        var data_x = [];
+        var data_y = [];
+        var user_data = [];
+        var parsed_row;
+        _.each(_.initial(rawdata), function (row, i) {
+            user_data.push(_.map(_.first(row, nr_variables + 1), function (x) {
+                return value = parseFloat(x);
+            }));
+        });
+        _.each(_.initial(rawdata), function (row, i) {
+            parsed_row = _.map(_.first(row, nr_variables + 1), function (x) {
+                return parseFloat(x);
+            });
+            data_x.push(parsed_row.slice(0, nr_variables));
+            data_y.push(parsed_row.slice(nr_variables, nr_variables + 1));
+        });
+
+
+        console.log(JSON.stringify(user_data));
+        gp_params["fitnessFunction"] = new SymbolicRegression(user_data);
+
+        $.each($("#gpParamsFrm").serializeArray(), function (key, val) {
+            gp_params[val.name] = parseFloat(val.value);
+        });
+        console.log(gp_params);
+
+        _.extend(gp_params, {
+            onComplete: function () {
+                console.log("best ind:");
+                $("#bestProgram").text(window.best_solution["genome"].root.strAsTree());
+                $("#bestTrainFitness").text(window.best_solution["fitness"]);
+            }
+        });
+        var gp = new GP(gp_params);
+        var gp_model = gp.searchLoop(gp.initializePopulation());
+
+        var parsed_data = [];
+        var gp_data = [];
+        var ss_tot = 0;
+        var ss_reg = 0;
+        var ss_res = 0;
+        var var_ = 0;
+        var mean = data_y.reduce(function(pV, cV) {return parseFloat(pV) + parseFloat(cV);}, 0) / data_y.length;
+        for (var i = 0; i < data_x.length; i = i + 1) {
+            var y = gp_params.fitnessFunction.evaluate(gp_model.genome.root, data_x[i]);
+            parsed_data.push([data_x[i][0], data_y[i][0]]);
+            gp_data.push([data_x[i], y]);
+            var_ = var_ + (y - data[i][0]) * (y - data[i][0])
+            ss_tot = ss_tot + Math.pow((data_y[i][0] - mean), 2);
+            ss_reg = ss_reg + Math.pow((y - mean), 2);
+            ss_res = ss_res + Math.pow((y - data_y[i][0]), 2);
+        }
+        var err = var_ / data_x.length;
+        var R_2 = 1 - ss_res/ss_tot;
+        console.log(err);
+        console.log(R_2);
+        parsed_data = parsed_data.sort();
+        gp_data = gp_data.sort();
+        console.log(JSON.stringify(parsed_data));
+        console.log(JSON.stringify(gp_data));
+
+        var options = {
+            series: {
+                lines: {show: true},
+                points: {
+                    radius: 3,
+                    show: true
+                }
+            }
+        };
+
+        $.plot($("#graph"), [
+            {
+            label: "Original",
+            data: parsed_data
+        },
+            {label: "GP", data: gp_data}
+        ], options);
+
+//TODO: Clean up, add GPJS references
+//TODO: Make plots of good, and more plots
+//TODO: Change input to slides
+    });
+
+</script>
+
+</body>
+</html>
