@@ -34,16 +34,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="barChart.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/barChart.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1590">
-              <caret line="0" column="38" selection-start-line="0" selection-start-column="38" selection-end-line="0" selection-end-column="38" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="IdeDocumentHistory">
@@ -216,14 +206,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/barChart.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1590">
-          <caret line="0" column="38" selection-start-line="0" selection-start-column="38" selection-end-line="0" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/oop_pony_gp.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2917342" vertical-offset="0" max-vertical-offset="3420">
