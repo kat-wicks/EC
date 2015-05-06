@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Pony GP JS</title>
+    <link rel="stylesheet" href="pony_gp.css"/>
+    <link rel="stylesheet" href="jquery.handsontable.full.css"/>
+    <link rel="stylesheet" href="bootstrap.css"/>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.flot.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="underscore.js"></script>
+    <script src="d3.v2.min.js"></script>
+    <script src="jquery.handsontable.full.js"></script>
+</head>
+<body>
+<h1>Pony GP (JavaScript)</h1>
+<script type="text/javascript" src="oop_pony_gp.js"></script>
+
+<div class="container">
+    <section id="inputData">
+        <div class="page-header"><h1>Input Data</h1></div>
+        <p>Paste your data. The last column is the label.</p>
+
+        <div class="dataTable" id="dataInput"
+             style=" width:100%; min-height: 200px;"></div>
+    </section>
+
+    <section id="gpParams">
+        <div class="page-header"><h1>Genetic Programming Parameters</h1></div>
+        <form id="gpParamsFrm">
+            <div class="row">
+                <div class="span3">
+                    Tournament size
+                    <br/>
+                    <label>
+                        <input type="text" name="tournament_size" value="2"/>
+                    </label>
+                </div>
+
+                <div class="span3">
+                    Crossover
+                    <br/>
+                    <label>
+                        <input type="text" name="crossover_probability"
+                               value="0.5"/>
+                    </label>
+                </div>
+
+                <div class="span3">
+                    Generations
+                    <br/>
+                    <label>
+                        <input type="text" name="generations" value="2"/>
+                    </label>
+                </div>
+            </div>
+            <div class="row" style="margin-top:0.5em;">
+                <div class="span3">
+                    Mutation
+                    <br/>
+                    <label>
+                        <input type="text" name="mutation_probability"
+                               value="0.2"/>
+                    </label>
+                </div>
+
+                <div class="span3">
+                    Population Size
+                    <br/>
+                    <label>
+                        <input type="text" name="population_size" value="100"/>
+                    </label>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <button id="evolve" class="btn btn-primary"
+                style="width:50%; height: 50px; font-size: 2em;">Evolve
+        </button>
+    </section>
+
+    <section>
+        <div class="page-header"><h1>Genetic Programming results</h1></div>
+        Best program:
+        <div class="prettyprint linenums" style="height:50px; overflow:scroll;">
+            <code id="bestProgram"></code></div>
+        Best Training Fitness:
+        <code id="bestTrainFitness"></code><br>
+
+        <div id="graph"></div>
+    </section>
+</div>
+<script>
+
+    // Default data
+    var data = [
+        [1334.62, 1325.69],
+        [1328.51, 1314.41],
+        [1325.86, 1311.80],
+        [1323.72, 1313.87],
+        [1333.07, 1312.88],
+        [1342.00, 1330.67],
+        [1346.82, 1336.36],
+        [1341.82, 1326.59],
+        [1330.42, 1318.51],
+        [1343.33, 1327.32],
+        [1350.47, 1333.36],
+        [1351.05, 1332.03],
+        [1354.51, 1336.36],
+        [1359.44, 1348.34],
+        [1349.44, 1338.64],
+        [1354.36, 1335.58],
+        [1348.00, 1329.17],
+        [1355.90, 1341.50],
+        [1360.84, 1349.52],
+        [1370.58, 1358.59]
+    ];
+    // Setup the data input table
+    $("#dataInput").handsontable({
+        data: data,
+        minSpareCols: 1,
+        minSpareRows: 1,
+        rowHeaders: true,
+        colHeaders: true
+    });
+
+    // Handle the click on the Evolve button
+    $("#evolve").click(function () {
+        // Parse data from input table
+        var rawData = $("#dataInput").data("handsontable").getData();
+        var nVariables = _.compact(rawData[0]).length;
+        var data_x = [];
+        var data_y = [];
+        var inputData = [];
+        _.each(_.initial(rawData), function (row, i) {
+            var parsed_row = _.map(_.first(row, nVariables), function (x) {
+                return parseFloat(x);
+            });
+            data_x.push(parsed_row.slice(0, nVariables - 1));
+            data_y.push(parsed_row.slice(nVariables - 1, nVariables));
+            inputData.push([data_x[i], data_y[i]]);
+        });
+        console.log(JSON.stringify(inputData));
+
+        // Create Symbolic Regression fitness function object based on data
+        gpParams["fitnessFunction"] = new SymbolicRegression(inputData);
+
+        // Parse parameter input
+        $.each($("#gpParamsFrm").serializeArray(), function (key, val) {
+            gpParams[val.name] = parseFloat(val.value);
+        });
+        console.log(gpParams);
+
+        // Create GP object
+        var gp = new GP(gpParams);
+        // Create initial population
+        var startTime = new Date().getTime();
+        var initialPopulation = gp.initializePopulation();
+        // Start evolutionary search loop
+        var gpModel = gp.searchLoop(initialPopulation);
+        var executionTimes = new Date().getTime() - startTime;
+        $("#bestProgram").text(gpModel["genome"].root.strAsTree());
+        $("#bestTrainFitness").text(gpModel["fitness"]);
+
+        // Get model performance
+        var gpData = [];
+        for (var i = 0; i < data_x.length; i = i + 1) {
+            // Evaluate the model on a data point
+            var yHat = gpParams.fitnessFunction.evaluate(gpModel.genome.root,
+                    data_x[i]);
+            gpData.push([data_x[i], yHat]);
+        }
+        // Get gp model quality
+        var gpMeasures = qualityMeasures(gpData, data_y);
+        inputData.sort();
+        gpData = gpData.sort();
+        console.log(JSON.stringify(inputData));
+        console.log(JSON.stringify(gpData));
+
+        // Plot input data and model predictions
+        var options = {
+            series: {
+                lines: {show: true},
+                points: {
+                    radius: 3,
+                    show: true
+                }
+            }
+        };
+        $.plot($("#graph"), [
+            {
+                label: "Data",
+                data: inputData
+            },
+            {
+                label: "GP MSE=" + gpMeasures.MSE.toFixed(2) +
+                " (" + executionTimes.toFixed(2) + "ms)",
+                data: gpData
+            }
+        ], options);
+    });
+
+</script>
+
+</body>
+</html>
