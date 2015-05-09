@@ -247,6 +247,9 @@ SymbolicRegression.prototype.evaluateIndividual = function (individual) {
     }
     // Negate the fitness, we are maximising
     fitness = -fitness / this.data.length;
+    if (isNaN(fitness)) {
+        fitness = DEFAULT_FITNESS;
+    }
     return fitness;
 };
 
@@ -805,7 +808,7 @@ var arities = {
 };
 
 var DIV_BY_ZERO_VALUE = 10000000;
-var DEFAULT_FITNESS = -1000;
+var DEFAULT_FITNESS = -1000000;
 var DATA_VARIABLE = "x_";
 
 /**
