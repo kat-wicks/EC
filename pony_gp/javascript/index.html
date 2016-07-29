@@ -178,6 +178,7 @@
         var gpMeasures = qualityMeasures(gpData, data_y);
         inputData = _.sortBy(inputData, function(num) {return parseFloat(num)});
         gpData = _.sortBy(gpData, function(num) {return parseFloat(num)});
+        //TODO Assert sorting is correct
         console.log(JSON.stringify(inputData));
         console.log(JSON.stringify(gpData));
 
