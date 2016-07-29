@@ -655,7 +655,8 @@ def print_stats(generation, individuals):
     # Print the statistics
     print(
         "Gen:%d fit_ave:%.2f+-%.3f size_ave:%.2f+-%.3f "
-        "depth_ave:%.2f+-%.3f max_size:%d max_depth:%d max_fit:%f %s" %
+        "depth_ave:%.2f+-%.3f max_size:%d max_depth:%d max_fit:%f "
+        "best_solution:%s" %
         (generation,
          ave_fit, std_fit,
          ave_size, std_size,
@@ -881,24 +882,24 @@ def parse_exemplars(file_name):
     """
 
     # Open file
-    in_file = open(file_name, 'r')
-    # Create a CSV file reader
-    reader = csv.reader(in_file, delimiter=',')
+    with open(file_name, 'r') as in_file:
+        # Create a CSV file reader
+        reader = csv.reader(in_file, delimiter=',')
 
-    # Read the header
-    headers = reader.next()
-    print("Reading: %s headers: %s" % (file_name, headers))
+        # Read the header
+        headers = reader.next()
 
-    # Store fitness cases and their target values
-    fitness_cases = []
-    targets = []
-    for row in reader:
-        # Parse the columns to floats and append to fitness cases
-        fitness_cases.append(map(float, row[:-1]))
-        # The last column is the target
-        targets.append(float(row[-1]))
+        # Store fitness cases and their target values
+        fitness_cases = []
+        targets = []
+        for row in reader:
+            # Parse the columns to floats and append to fitness cases
+            fitness_cases.append(map(float, row[:-1]))
+            # The last column is the target
+            targets.append(float(row[-1]))
 
-    in_file.close()
+        print("Reading: %s headers: %s exemplars:%d" %
+              (file_name, headers, len(targets)))
 
     return fitness_cases, targets
 
@@ -992,7 +993,7 @@ def parse_arguments():
     # Command line arguments
     parser = optparse.OptionParser()
     # Population size
-    parser.add_option("-p", "--population_size", type=int, default=10,
+    parser.add_option("-p", "--population_size", type=int, default=20,
                       dest="population_size", help="population size")
     # Size of an individual
     parser.add_option("-m", "--max_depth", type=int, default=3,
@@ -1002,10 +1003,10 @@ def parse_arguments():
     parser.add_option("-e", "--elite_size", type=int, default=1,
                       dest="elite_size", help="elite size")
     # Generations is the number of times the EA will iterate the search loop
-    parser.add_option("-g", "--generations", type=int, default=10,
+    parser.add_option("-g", "--generations", type=int, default=20,
                       dest="generations", help="number of generations")
     # Tournament size
-    parser.add_option("--ts", "--tournament_size", type=int, default=2,
+    parser.add_option("--ts", "--tournament_size", type=int, default=3,
                       dest="tournament_size", help="tournament size")
     # Random seed. Used to allow replication of runs of the EA. The search is
     # stochastic and and replication of the results can be guaranteed by using
@@ -1059,7 +1060,7 @@ def main():
     param["fitness_cases"] = train["fitness_cases"]
     param["targets"] = train["targets"]
     best_ever = run(param)
-    print("Best train:" + str(best_ever))
+    print("Best solution on train data:" + str(best_ever))
     # Test on out-of-sample data
     out_of_sample_test(best_ever, test["fitness_cases"], test["targets"],
                        param["symbols"])
@@ -1079,7 +1080,7 @@ def out_of_sample_test(individual, fitness_cases, targets, symbols):
     :type symbols: dict
     """
     evaluate_individual(individual, fitness_cases, targets, symbols)
-    print("Best test:" + str(individual))
+    print("Best solution on test data:" + str(individual))
 
 
 if __name__ == '__main__':
