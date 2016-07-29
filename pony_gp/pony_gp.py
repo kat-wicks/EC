@@ -34,7 +34,8 @@ import sys
 """
 
 Implementation of Genetic Programming(GP), the purpose of this code is
-to describe how the algorithm works. The intended use is for teaching.
+to describe how the algorithm works. The intended use is for
+teaching.
 The design is supposed to be simple, self contained and use core python
 libraries.
 
@@ -1010,7 +1011,7 @@ def parse_arguments():
     # stochastic and and replication of the results can be guaranteed by using
     # the same random seed
     parser.add_option("-s", "--seed", type=int, default=0,
-                      dest="seed", help="seed number")
+                      dest="seed", help="Random seed")
     # Probability of crossover
     parser.add_option("--cp", "--crossover_probability", type=float,
                       dest="crossover_probability",
