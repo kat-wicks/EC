@@ -30,7 +30,6 @@ import random
 import math
 import copy
 import sys
-
 """
 
 Implementation of Genetic Programming(GP), the purpose of this code is
@@ -275,9 +274,7 @@ def get_depth_from_index(node, idx, node_idx, depth, idx_depth=None):
         # Increase the depth
         depth += 1
         # Recursively check the child depth and node index
-        idx_depth, idx = get_depth_from_index(child, idx,
-                                              node_idx,
-                                              depth,
+        idx_depth, idx = get_depth_from_index(child, idx, node_idx, depth,
                                               idx_depth)
         # Decrease the depth
         depth -= 1
@@ -503,15 +500,12 @@ def initialize_population(param):
             assert get_max_tree_depth(tree, 0, 0) < (max_depth + 1)
 
         # An individual is a dictionary
-        individual = {
-            "genome": tree,
-            "fitness": DEFAULT_FITNESS
-        }
+        individual = {"genome": tree, "fitness": DEFAULT_FITNESS}
         # Append the individual to the population
         individuals.append(individual)
         print('Initial tree nr:%d nodes:%d max_depth:%d: %s' %
-              (i, get_number_of_nodes(tree, 0),
-               get_max_tree_depth(tree, 0, 0), tree))
+              (i, get_number_of_nodes(tree, 0), get_max_tree_depth(tree, 0, 0),
+               tree))
 
     return individuals
 
@@ -537,11 +531,8 @@ def evaluate_fitness(individuals, param, cache):
             ind["fitness"] = cache[key]
         else:
             # Execute the fitness function
-            evaluate_individual(ind,
-                                param["fitness_cases"],
-                                param["targets"],
-                                param["symbols"]
-                                )
+            evaluate_individual(ind, param["fitness_cases"], param["targets"],
+                                param["symbols"])
             cache[key] = ind["fitness"]
 
         assert ind["fitness"] >= DEFAULT_FITNESS
@@ -634,8 +625,8 @@ def print_stats(generation, individuals):
         :rtype: tuple
         """
         _ave = float(sum(values)) / len(values)
-        _std = math.sqrt(float(
-            sum((value - _ave) ** 2 for value in values)) / len(values))
+        _std = math.sqrt(
+            float(sum((value - _ave)**2 for value in values)) / len(values))
         return _ave, _std
 
     # Make sure individuals are sorted
@@ -653,16 +644,12 @@ def print_stats(generation, individuals):
     # Get average and standard deviation of max depth
     ave_depth, std_depth = get_ave_and_std(depth_values)
     # Print the statistics
-    print(
-        "Gen:%d fit_ave:%.2f+-%.3f size_ave:%.2f+-%.3f "
-        "depth_ave:%.2f+-%.3f max_size:%d max_depth:%d max_fit:%f "
-        "best_solution:%s" %
-        (generation,
-         ave_fit, std_fit,
-         ave_size, std_size,
-         ave_depth, std_depth,
-         max(size_values), max(depth_values), max(fitness_values),
-         individuals[0]))
+    print("Gen:%d fit_ave:%.2f+-%.3f size_ave:%.2f+-%.3f "
+          "depth_ave:%.2f+-%.3f max_size:%d max_depth:%d max_fit:%f "
+          "best_solution:%s" %
+          (generation, ave_fit, std_fit, ave_size, std_size, ave_depth,
+           std_depth, max(size_values), max(depth_values), max(fitness_values),
+           individuals[0]))
 
 
 def subtree_mutation(individual, param):
@@ -689,36 +676,28 @@ def subtree_mutation(individual, param):
         end_node_idx = get_number_of_nodes(new_individual["genome"], 0) - 1
         node_idx = random.randint(0, end_node_idx)
         # Get node depth
-        node_depth, cnt = get_depth_from_index(new_individual["genome"],
-                                               0,
-                                               node_idx,
-                                               0)
+        node_depth, cnt = get_depth_from_index(new_individual["genome"], 0,
+                                               node_idx, 0)
         assert param["max_depth"] >= node_depth
 
         # Get a new symbol for the subtree
-        new_subtree = [get_random_symbol(node_depth,
-                                         param["max_depth"],
-                                         param["symbols"])
-                       ]
+        new_subtree = [
+            get_random_symbol(node_depth, param["max_depth"], param["symbols"])
+        ]
         # Grow tree if it is a function symbol
         if new_subtree[0] in param["symbols"]["functions"]:
             # Grow to full depth?
             full = bool(random.getrandbits(1))
             # Grow subtree
-            grow(new_subtree,
-                 node_depth,
-                 param["max_depth"],
-                 full,
+            grow(new_subtree, node_depth, param["max_depth"], full,
                  param["symbols"])
 
         assert get_max_tree_depth(new_subtree, node_depth, 0) \
                <= param["max_depth"]
 
         # Replace the original subtree with the new subtree
-        find_and_replace_subtree(new_individual["genome"],
-                                 new_subtree,
-                                 node_idx,
-                                 0)
+        find_and_replace_subtree(new_individual["genome"], new_subtree,
+                                 node_idx, 0)
 
         assert get_max_tree_depth(new_individual["genome"], 0, 0) \
                <= param["max_depth"]
@@ -744,13 +723,12 @@ def subtree_crossover(parent1, parent2, param):
     """
     # Copy the parents to make offsprings
     offsprings = ({
-                      "genome": copy.deepcopy(parent1["genome"]),
-                      "fitness": DEFAULT_FITNESS
-                  },
-                  {
-                      "genome": copy.deepcopy(parent2["genome"]),
-                      "fitness": DEFAULT_FITNESS
-                  })
+        "genome": copy.deepcopy(parent1["genome"]),
+        "fitness": DEFAULT_FITNESS
+    }, {
+        "genome": copy.deepcopy(parent2["genome"]),
+        "fitness": DEFAULT_FITNESS
+    })
 
     # Check if offspring will be crossed over
     if random.random() < param["crossover_probability"]:
@@ -761,8 +739,8 @@ def subtree_crossover(parent1, parent2, param):
             end_node_idx = get_number_of_nodes(offsprings[i]["genome"], 0) - 1
             node_idx = random.randint(0, end_node_idx)
             # Find the subtree at the crossover point
-            xo_nodes.append(get_node_at_index(offsprings[i]["genome"],
-                                              node_idx))
+            xo_nodes.append(
+                get_node_at_index(offsprings[i]["genome"], node_idx))
             xo_point_depth = get_max_tree_depth(xo_nodes[-1], 0, 0)
             offspring_depth = get_max_tree_depth(offspring["genome"], 0, 0)
             node_depths.append((xo_point_depth, offspring_depth))
@@ -922,14 +900,15 @@ def get_symbols():
     """
 
     # Dictionary of symbols and their arity
-    arities = {"1": 0,
-               "x0": 0,
-               "x1": 0,
-               "+": 2,
-               "-": 2,
-               "*": 2,
-               "/": 2,
-               }
+    arities = {
+        "1": 0,
+        "x0": 0,
+        "x1": 0,
+        "+": 2,
+        "-": 2,
+        "*": 2,
+        "/": 2,
+    }
     # List of terminal symbols
     terminals = []
     # List of function symbols
@@ -978,8 +957,13 @@ def get_test_and_train_data(fitness_cases_file, test_train_split):
         test_cases.append(exemplars[i])
         test_targets.append(targets[i])
 
-    return ({"fitness_cases": test_cases, "targets": test_targets},
-            {"fitness_cases": training_cases, "targets": training_targets})
+    return ({
+        "fitness_cases": test_cases,
+        "targets": test_targets
+    }, {
+        "fitness_cases": training_cases,
+        "targets": training_targets
+    })
 
 
 def parse_arguments():
@@ -993,42 +977,82 @@ def parse_arguments():
     # Command line arguments
     parser = optparse.OptionParser()
     # Population size
-    parser.add_option("-p", "--population_size", type=int, default=20,
-                      dest="population_size", help="population size")
+    parser.add_option(
+        "-p",
+        "--population_size",
+        type=int,
+        default=20,
+        dest="population_size",
+        help="population size")
     # Size of an individual
-    parser.add_option("-m", "--max_depth", type=int, default=3,
-                      dest="max_depth", help="Max depth of tree")
+    parser.add_option(
+        "-m",
+        "--max_depth",
+        type=int,
+        default=3,
+        dest="max_depth",
+        help="Max depth of tree")
     # Number of elites, i.e. the top solution from the old population
     # transferred to the new population
-    parser.add_option("-e", "--elite_size", type=int, default=1,
-                      dest="elite_size", help="elite size")
+    parser.add_option(
+        "-e",
+        "--elite_size",
+        type=int,
+        default=1,
+        dest="elite_size",
+        help="elite size")
     # Generations is the number of times the EA will iterate the search loop
-    parser.add_option("-g", "--generations", type=int, default=20,
-                      dest="generations", help="number of generations")
+    parser.add_option(
+        "-g",
+        "--generations",
+        type=int,
+        default=20,
+        dest="generations",
+        help="number of generations")
     # Tournament size
-    parser.add_option("--ts", "--tournament_size", type=int, default=3,
-                      dest="tournament_size", help="tournament size")
+    parser.add_option(
+        "--ts",
+        "--tournament_size",
+        type=int,
+        default=3,
+        dest="tournament_size",
+        help="tournament size")
     # Random seed. Used to allow replication of runs of the EA. The search is
     # stochastic and and replication of the results can be guaranteed by using
     # the same random seed
-    parser.add_option("-s", "--seed", type=int, default=0,
-                      dest="seed", help="Random seed")
+    parser.add_option(
+        "-s", "--seed", type=int, default=0, dest="seed", help="Random seed")
     # Probability of crossover
-    parser.add_option("--cp", "--crossover_probability", type=float,
-                      dest="crossover_probability",
-                      default=0.8, help="crossover probability")
+    parser.add_option(
+        "--cp",
+        "--crossover_probability",
+        type=float,
+        dest="crossover_probability",
+        default=0.8,
+        help="crossover probability")
     # Probability of mutation
-    parser.add_option("--mp", "--mutation_probability", type=float,
-                      dest="mutation_probability",
-                      default=0.1, help="mutation probability")
+    parser.add_option(
+        "--mp",
+        "--mutation_probability",
+        type=float,
+        dest="mutation_probability",
+        default=0.1,
+        help="mutation probability")
     # Fitness case file
-    parser.add_option("--fc", "--fitness_cases", default="fitness_cases.csv",
-                      dest="fitness_cases",
-                      help="fitness cases file")
+    parser.add_option(
+        "--fc",
+        "--fitness_cases",
+        default="fitness_cases.csv",
+        dest="fitness_cases",
+        help="fitness cases file")
     # Test-training data split
-    parser.add_option("--tts", "--test_train_split", type=float, default=0.7,
-                      dest="test_train_split",
-                      help="test-train data split")
+    parser.add_option(
+        "--tts",
+        "--test_train_split",
+        type=float,
+        default=0.7,
+        dest="test_train_split",
+        help="test-train data split")
     # Parse the command line arguments
     options, args = parser.parse_args()
     return options
