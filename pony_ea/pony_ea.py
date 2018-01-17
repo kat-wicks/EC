@@ -113,7 +113,7 @@ def ea(population_size, max_size, generations,
         genome = [random.randint(0, 1) for _ in range(max_size)]
         individual = {'genome': genome, 'fitness': DEFAULT_FITNESS}
         population.append(individual)
-        print('Initial {}: {}'.format(individual['genome'], individual['fitness'])
+        print('Initial {}: {}'.format(individual['genome'], individual['fitness']))
 
     # Evaluate fitness
     for ind in population:
@@ -188,9 +188,8 @@ def print_stats(generation, population):
     # the population
     ave_fit, std_fit = get_ave_and_std(fitness_values)
     # Print the statistics, including the best solution
-    print("Gen:{} fit_ave:{:.2f}+-{:.3f} {} {}".format(
-          (generation, ave_fit, std_fit,
-           population[0]['genome'], population[0]['fitness'])))
+    print("Gen:{} fit_ave:{:.2f}+-{:.3f} {} {}".format(generation, ave_fit, std_fit,
+           population[0]['genome'], population[0]['fitness']))
 
 
 def main():
@@ -218,9 +217,9 @@ def main():
     args = parser.parse_args()
 
     # Set random seed for reproducibility
-    if args.seed is not None:
-        random.seed(args.seed)
+    random.seed(args.seed)
 
+    print(args)
     ea(args.psize, args.maxsize, args.generations,
        args.mutation_probability, args.tournament_size)
 
