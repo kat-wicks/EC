@@ -209,26 +209,20 @@ def main():
                         help="number of generations")
     parser.add_argument("-s", "--seed", type=int, default=None,
                         help="seed number")
-    parser.add_argument("-cp", "--crossover", type=float, default=0.9,
+    parser.add_argument("-cp", "--crossover_probability", type=float, default=0.9,
                         help="crossover probability")
-    parser.add_argument("-mp", "--mutation", type=float, default=0.5,
+    parser.add_argument("-mp", "--mutation_probability", type=float, default=0.5,
                         help="mutation probability")
     parser.add_argument("-t", "--tournament_size", type=int, default=2,
                         help="tournament size")
     args = parser.parse_args()
-    # Set arguments
-    population_size = args.psize
-    max_size = args.maxsize
-    generations = args.generations
-    seed = args.seed
-    mutation_probability = args.mutation
-    tournament_size = args.tournament_size
 
     # Set random seed for reproducibility
-    if seed is not None:
-        random.seed(seed)
+    if args.seed is not None:
+        random.seed(args.seed)
 
-    ea(population_size, max_size, generations, mutation_probability, tournament_size)
+    ea(args.psize, args.maxsize, args.generations,
+       args.mutation_probability, args.tournament_size)
 
 
 if __name__ == '__main__':
