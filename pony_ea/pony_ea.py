@@ -58,7 +58,7 @@ Components
 
   The data fields are:
 
-  - Individual, a list:
+  - Individual, a dictionary:
 
     - Genome, an integer list for representing a bitstring
     - Fitness, an integer for the fitness value
@@ -111,12 +111,13 @@ def ea(population_size, max_size, generations,
     population = []
     for i in range(population_size):
         genome = [random.randint(0, 1) for _ in range(max_size)]
-        population.append([genome, DEFAULT_FITNESS])
-        print('Initial %d: %s' % (i, genome))
+        individual = {'genome': genome, 'fitness': DEFAULT_FITNESS}
+        population.append(individual)
+        print('Initial {}: {}'.format(individual['genome'], individual['fitness'])
 
     # Evaluate fitness
     for ind in population:
-        ind[1] = sum(ind[0])
+        ind['fitness'] = sum(ind['genome'])
 
     #Generation loop
     generation = 0
@@ -129,7 +130,7 @@ def ea(population_size, max_size, generations,
             # from the population.
             competitors = random.sample(population, tournament_size)
             # Rank the selected solutions
-            competitors.sort(reverse=True, key=lambda x:x[1])
+            competitors.sort(reverse=True, key=lambda x:x['fitness'])
             # Append the best solution to the winners
             new_population.append(copy.deepcopy(competitors[0]))
 
@@ -137,13 +138,13 @@ def ea(population_size, max_size, generations,
         for ind in new_population:
             if random.random() < mutation_probability:
                 #Pick gene
-                idx = random.randint(0, len(ind[0]) - 1)
+                idx = random.randint(0, len(ind['genome']) - 1)
                 #Flip it
-                ind[0][idx] = (ind[0][idx] + 1) % 2
+                ind['genome'][idx] = (ind['genome'][idx] + 1) % 2
 
         # Evaluate fitness
         for ind in new_population:
-            ind[1] = sum(ind[0])
+            ind['fitness'] = sum(ind['genome'])
 
         # Replace population
         population = new_population
@@ -180,17 +181,16 @@ def print_stats(generation, population):
         return _ave, _std
 
     # Sort population
-    population.sort(reverse=True, key=lambda x:x[1])    
+    population.sort(reverse=True, key=lambda x:x['fitness'])    
     # Get the fitness values
-    fitness_values = [i[1] for i in population]
+    fitness_values = [i['fitness'] for i in population]
     # Calculate average and standard deviation of the fitness in
     # the population
     ave_fit, std_fit = get_ave_and_std(fitness_values)
     # Print the statistics, including the best solution
-    print("Gen:%d fit_ave:%.2f+-%.3f %s %d" %
-          (generation,
-           ave_fit, std_fit,
-           population[0][0], population[0][1]))
+    print("Gen:{} fit_ave:{:.2f}+-{:.3f} {} {}".format(
+          (generation, ave_fit, std_fit,
+           population[0]['genome'], population[0]['fitness'])))
 
 
 def main():
@@ -230,5 +230,5 @@ if __name__ == '__main__':
     start_time = time.time()
     main()
     execution_time = time.time() - start_time
-    print('Execution time: %f seconds' % execution_time)
+    print('Execution time: {} seconds'.format(execution_time))
 
