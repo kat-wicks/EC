@@ -12,7 +12,7 @@ import tsp
 
 # The MIT License (MIT)
 
-# Copyright (c) 2013 Erik Hemberg
+# Copyright (c) 2013, 2018 ALFA Group, Erik Hemberg
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -57,6 +57,8 @@ Change the fitness function ot apply the algorithm to a different problem.
   
       - *Mutate* a solution
 
+      - *Crossover* two solutions
+
     - *Replace* the old population with the new population
 
   The data fields are:
@@ -66,11 +68,17 @@ Change the fitness function ot apply the algorithm to a different problem.
     - Genome, an integer list for representing a bitstring
     - Fitness, an integer for the fitness value
 
+See e.g.  Annals of Operations Research 63(1996)339-370 339
+Genetic algorithms for the traveling salesman problem for more on TSP
+
 """
 
 
 DEFAULT_FITNESS = float("inf")
 VERBOSE = False
+
+def map_genome(genome):
+    return genome
 
 def ea(population_size, max_size, generations,
        mutation_probability, crossover_probability,
@@ -83,12 +91,15 @@ def ea(population_size, max_size, generations,
     #Create population
     city_data = tsp.parse_city_data(tsp_data)
     number_of_cities = len(city_data)
-    _tour = list(range(0, number_of_cities))
+    base_tour = list(range(0, number_of_cities))
+
+    # Initial population
     population = []
     for i in range(population_size):
-        genome = _tour[:]
+        genome = base_tour[:]
         random.shuffle(genome)
-        individual = {'genome': genome, 'fitness': DEFAULT_FITNESS}
+        phenotype = map_genome(genome)
+        individual = {'genome': genome, 'fitness': DEFAULT_FITNESS, 'phenotype': phenotype}
         population.append(individual)
         if VERBOSE:
             print('Initial {}: {}'.format(individual['genome'], individual['fitness']))
@@ -112,17 +123,17 @@ def ea(population_size, max_size, generations,
             # Append the best solution to the winners
             new_population.append(copy.deepcopy(competitors[0]))
 
-        # Vary the population by mutation
-        for ind in new_population:
-            if mutation_probability < random.random():
-                ind = swap_mutation(individual)
-                
         # Vary the population by crossover
         for ind in new_population:
             if crossover_probability < random.random():
                 parents = random.sample(new_population, 2)
                 ind = modified_onepoint_crossover(*parents)
         
+        # Vary the population by mutation
+        for ind in new_population:
+            if mutation_probability < random.random():
+                ind = swap_mutation(individual)
+                
         # Evaluate fitness
         for ind in new_population:
             ind['fitness'] = tsp.get_tour_cost(ind['genome'], city_data)
@@ -168,7 +179,7 @@ def modified_onepoint_crossover(parent_one, parent_two):
     child = {'genome': None, 'fitness': DEFAULT_FITNESS}
 
     point = random.randint(0, len(parent_one['genome']))
-    # Get temporary genome
+    # Get temporary genome concatenate
     _genome = parent_one['genome'][:point] + parent_two['genome'][:]
     # Do not use duplicates
     genome = []
