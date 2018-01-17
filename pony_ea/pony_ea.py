@@ -9,7 +9,6 @@ import argparse
 
 import tsp
 
-
 # The MIT License (MIT)
 
 # Copyright (c) 2013, 2018 ALFA Group, Erik Hemberg
@@ -39,111 +38,151 @@ import tsp
 Evolutionary Algorithm
 
 The source code design is for teaching the concept of how evolution
-inspires computational intelligence, not for fast portable use.
+inspires computational intelligence, not for fast portable use. 
 
-Change the fitness function ot apply the algorithm to a different problem.
+This version finds solutions for the Travelling Salesman Problem.
+For more on TSP see e.g. 
+Annals of Operations Research 63(1996)339-370 339 Genetic algorithms for the traveling salesman problem
+"""
 
-.. codeauthor:: Erik Hemberg <hembergerik@csail.mit.edu>
+__author__ = "Erik Hemberg"
+__version__ = "2"
+__date__ = "17/01/2018"
 
-  The evolutionary algorithm, performs a *stochastic parallel
+DEFAULT_FITNESS = float("inf")
+VERBOSE = False
+
+
+def map_genome(genome):
+    """
+    Map a genome to a phenotype (input to output) with identity.
+
+    :param genome: List of node(city) to visit in order
+    :type genome: list of integers
+    :return: List of node(city) to visit in order
+    :rtype: list of integers
+    """
+    return genome
+
+
+def evolutionary_algorithm(population_size, generations,
+                           mutation_probability, crossover_probability,
+                           tournament_size, elite_size, tsp_data):
+    """
+  The evolutionary algorithm (EA), performs a *stochastic parallel
   iterative* search. The algorithm:
 
   - Generate a population of *initial solutions*
-  - *Iterate* a fixed number of times 
+  - *Iterate* a fixed number of times
 
     - *Evaluate* the fitness of the new solutions
     - *Select* solutions for a new population
     - *Vary* the solutions in the new population
-  
+
       - *Mutate* a solution
 
       - *Crossover* two solutions
 
-    - *Replace* the old population with the new population
+    - *Replace* the old population with the new population keeping the "elite" solutions
 
   The data fields are:
 
   - Individual, a dictionary:
 
-    - Genome, an integer list for representing a bitstring
+    - Genome, an integer list
     - Fitness, an integer for the fitness value
-
-See e.g.  Annals of Operations Research 63(1996)339-370 339
-Genetic algorithms for the traveling salesman problem for more on TSP
-
-"""
+    - Phenotype, a representation of a TSP tour
 
 
-DEFAULT_FITNESS = float("inf")
-VERBOSE = False
-
-def map_genome(genome):
-    return genome
-
-def ea(population_size, max_size, generations,
-       mutation_probability, crossover_probability,
-       tournament_size, elite_size, tsp_data):
+    :param population_size:
+    :param generations:
+    :param mutation_probability:
+    :param crossover_probability:
+    :param tournament_size:
+    :param elite_size:
+    :param tsp_data:
+    :return:
     """
-    Evolutionary search
-    loop. Starting from the initial population.
-    """
-
-    #Create population
-    city_data = tsp.parse_city_data(tsp_data)
-    number_of_cities = len(city_data)
+    ##########
+    # Create TSP problem
+    ##########
+    # Parse the TSP data to a cost matrix
+    cost_matrix = tsp.parse_city_data(tsp_data)
+    number_of_cities = len(cost_matrix)
+    # Base tour is shuffled for each individual in the population
     base_tour = list(range(0, number_of_cities))
 
+    ##########
     # Initial population
+    ##########
     population = []
     for i in range(population_size):
         genome = base_tour[:]
         random.shuffle(genome)
-        phenotype = map_genome(genome)
-        individual = {'genome': genome, 'fitness': DEFAULT_FITNESS, 'phenotype': phenotype}
+        individual = {'genome': genome,
+                      'fitness': DEFAULT_FITNESS,
+                      'phenotype': map_genome(genome)}
         population.append(individual)
         if VERBOSE:
             print('Initial {}: {}'.format(individual['genome'], individual['fitness']))
 
+    ##########
     # Evaluate fitness
+    ##########
     for ind in population:
-        ind['fitness'] = tsp.get_tour_cost(ind['genome'], city_data)
+        ind['fitness'] = tsp.get_tour_cost(ind['phenotype'], cost_matrix)
 
-    #Generation loop
+    ##########
+    # Generation loop
+    ##########
     generation = 0
     while generation < generations:
 
-        # Selection
+        ##########
+        # Selection of fit solutions
+        ##########
         new_population = []
         while len(new_population) < population_size:
-            # Randomly select tournament size individual solutions
+            # Randomly select tournament size solutions
             # from the population.
             competitors = random.sample(population, tournament_size)
-            # Rank the selected solutions
+            # Rank the selected solutions in a competition
             sort_population(competitors)
-            # Append the best solution to the winners
+            # Append the winner of the competition to the new population
             new_population.append(copy.deepcopy(competitors[0]))
 
+        ##########
         # Vary the population by crossover
-        for ind in new_population:
-            if crossover_probability < random.random():
-                parents = random.sample(new_population, 2)
-                ind = modified_onepoint_crossover(*parents)
-        
-        # Vary the population by mutation
-        for ind in new_population:
-            if mutation_probability < random.random():
-                ind = swap_mutation(individual)
-                
-        # Evaluate fitness
-        for ind in new_population:
-            ind['fitness'] = tsp.get_tour_cost(ind['genome'], city_data)
+        ##########
+        for i, ind in enumerate(new_population):
+            if crossover_probability > random.random():
+                # Select a mate for crossover
+                mate = random.sample(new_population, 1)
+                # Put the child in the population
+                new_population[i] = modified_onepoint_crossover(ind, *mate)
 
+        ##########
+        # Vary the population by mutation
+        ##########
+        for i, ind in enumerate(new_population):
+            if mutation_probability > random.random():
+                # Mutate genes by swapping them
+                new_population[i] = swap_mutation(ind)
+
+        ##########
+        # Evaluate fitness
+        ##########
+        for ind in new_population:
+            ind['fitness'] = tsp.get_tour_cost(ind['phenotype'], cost_matrix)
+
+        ##########
         # Replace population
+        ##########
         sort_population(population)
-        # Add elites
+        # Add elites from old population
         population = population[:elite_size] + new_population
         sort_population(population)
-        # Get back to population size
+        # Trim back to population size
         population = population[:population_size]
 
         # Print the stats of the population
@@ -156,7 +195,16 @@ def ea(population_size, max_size, generations,
 
 
 def sort_population(population):
-    population.sort(reverse=False, key=lambda x:x['fitness'])    
+    """
+    Sort population by fitness.
+
+    Decreasing fitness order.
+
+    :param population:
+    :return: sorted population
+    """
+    population.sort(reverse=False, key=lambda x: x['fitness'])
+
 
 def modified_onepoint_crossover(parent_one, parent_two):
     """Given two individuals, create one child using one-point
@@ -167,7 +215,6 @@ def modified_onepoint_crossover(parent_one, parent_two):
     parent chromosome to the initial segment of the first parent
     (before the cut point), and by eliminating the duplicates.
 
-    :param Individual: 
     :param parent_one: A parent
     :type parent_one: dict
     :param parent_two: Another parent
@@ -176,19 +223,21 @@ def modified_onepoint_crossover(parent_one, parent_two):
     :rtype: dict
 
     """
-    child = {'genome': None, 'fitness': DEFAULT_FITNESS}
+    child = {'genome': None, 'fitness': DEFAULT_FITNESS, 'phenotype': None}
 
+    # Pick a point for crossover
     point = random.randint(0, len(parent_one['genome']))
     # Get temporary genome concatenate
     _genome = parent_one['genome'][:point] + parent_two['genome'][:]
-    # Do not use duplicates
+    # Remove duplicate genes
     genome = []
     for gene in _genome:
         if gene not in genome:
             genome.append(gene)
-                
+
     child['genome'] = genome
-    
+    child['phenotype'] = map_genome(genome)
+
     return child
 
 
@@ -202,16 +251,19 @@ def swap_mutation(individual):
 
     """
 
+    # Pick points for swapping
     genome_length = len(individual['genome']) - 1
     point_one = random.randint(0, genome_length)
     point_two = random.randint(0, genome_length)
+    # Temporary store the values
     value_one = individual['genome'][point_one]
     value_two = individual['genome'][point_two]
-    # Swap
+    # Swap the values
     individual['genome'][point_one] = value_two
     individual['genome'][point_two] = value_one
     # Reset fitness
     individual['fitness'] = DEFAULT_FITNESS
+    individual['phenotype'] = map_genome(individual['genome'])
 
     return individual
 
@@ -231,7 +283,7 @@ def print_stats(generation, population):
         Return average and standard deviation.            
 
         :param values: Values to calculate on
-        :type values: list of numbers
+        :type values: list
         :returns: Average and Standard deviation of the input values
         :rtype: Tuple of floats
         """
@@ -241,15 +293,36 @@ def print_stats(generation, population):
         return _ave, _std
 
     # Sort population
-    population.sort(reverse=True, key=lambda x:x['fitness'])    
+    population.sort(reverse=True, key=lambda x: x['fitness'])
     # Get the fitness values
     fitness_values = [i['fitness'] for i in population]
     # Calculate average and standard deviation of the fitness in
     # the population
     ave_fit, std_fit = get_ave_and_std(fitness_values)
     # Print the statistics, including the best solution
-    print("Gen:{} fit_ave:{:.2f}+-{:.3f} {} {}".format(generation, ave_fit, std_fit,
-           population[0]['genome'], population[0]['fitness']))
+    print("Gen:{}; Population fitness mean:{:.2f}+-{:.3f}; Best solution:{}, fitness:{}".format(
+        generation, ave_fit, std_fit, population[0]['genome'], population[0]['fitness']))
+
+
+def tsp_exhaustive_search(tsp_data):
+    """
+    Brute force search
+    :param tsp_data:
+    :return:
+    """
+    city_data = tsp.parse_city_data(tsp_data)
+    base_tour = range(0, len(city_data))
+    min_tour = {'cost': float("inf"), 'tour': None}
+    start_time = time.time()
+    for tour in itertools.permutations(base_tour):
+        cost = tsp.get_tour_cost(list(tour), city_data)
+        if cost < min_tour['cost']:
+            min_tour['cost'] = cost
+            min_tour['tour'] = tour
+
+    execution_time = time.time() - start_time
+    print("EXHAUSTIVE:\n A minimal tour cost is {} for path {}. Searched {} points in {:.5f} seconds".format(
+        min_tour['cost'], min_tour['tour'], math.factorial(len(city_data)), execution_time))
 
 
 def main():
@@ -260,60 +333,47 @@ def main():
     """
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--psize", type=int, default=30,
-                        help="population size")
-    parser.add_argument("-m", "--maxsize", type=int, default=5,
-                        help="individual size")
+    parser.add_argument("-p", "--population_size", type=int, default=30,
+                        help="Population size")
     parser.add_argument("-g", "--generations", type=int, default=5,
                         help="number of generations")
     parser.add_argument("-s", "--seed", type=int, default=None,
-                        help="seed number")
+                        help="Random seed number")
     parser.add_argument("-cp", "--crossover_probability", type=float, default=0.8,
-                        help="crossover probability")
+                        help="Crossover probability")
     parser.add_argument("-mp", "--mutation_probability", type=float, default=0.2,
-                        help="mutation probability")
+                        help="Mutation probability")
     parser.add_argument("-t", "--tournament_size", type=int, default=2,
-                        help="tournament size")
+                        help="Tournament size")
     parser.add_argument("--elite_size", type=int, default=1,
-                        help="elite size")
-    parser.add_argument("--tsp_data", type=str, default='tsp_costs.csv',
-                        help="Data for Travelling Salesman problem.")
+                        help="Elite size")
+    parser.add_argument("--tsp_data", type=str, default='tsp_costs_5.csv',
+                        help="Data for Travelling Salesman problem in a CSV file.")
     parser.add_argument("--tsp_exhaustive", action='store_true',
-                        help="Data for Travelling Salesman problem.")
+                        help="Perform exhaustive search of TSP.")
     parser.add_argument("--verbose", action='store_true',
-                        help="Verbose")
+                        help="Verbose mode")
     args = parser.parse_args()
 
     # Set random seed for reproducibility
     random.seed(args.seed)
 
+    global VERBOSE
     VERBOSE = args.verbose
     if VERBOSE:
         print(args)
-    
-    start_time = time.time()
-    best_solution = ea(args.psize, args.maxsize, args.generations,
-                       args.mutation_probability, args.crossover_probability,
-                       args.tournament_size, args.elite_size, args.tsp_data)
-    execution_time = time.time() - start_time
-    print("EA:\n Minimal tour cost is {} for path {}. Searched {} points in {:.5f} seconds".format( best_solution['fitness'], best_solution['genome'], args.psize * args.generations, execution_time))
 
+    start_time = time.time()
+    best_solution = evolutionary_algorithm(args.population_size, args.generations,
+                                           args.mutation_probability, args.crossover_probability,
+                                           args.tournament_size, args.elite_size, args.tsp_data)
+    execution_time = time.time() - start_time
+    print("EA:\n Best tour cost is {} for path {}. Searched {} points in {:.5f} seconds".format(
+        best_solution['fitness'], best_solution['genome'], args.population_size * args.generations, execution_time))
 
     if args.tsp_exhaustive:
-        city_data = tsp.parse_city_data(args.tsp_data)
-        base_tour = range(0, len(city_data))
-        min_tour = {'cost':float("inf"), 'tour': None}
-        start_time = time.time()
-        for tour in itertools.permutations(base_tour):
-            cost = tsp.get_tour_cost(list(tour), city_data)
-            if cost < min_tour['cost']:
-                min_tour['cost'] = cost
-                min_tour['tour'] = tour
-
-        execution_time = time.time() - start_time
-        print("EXHAUSTIVE:\n A minimal tour cost is {} for path {}. Searched {} points in {:.5f} seconds".format( min_tour['cost'], min_tour['tour'], math.factorial(len(city_data)), execution_time))
+        tsp_exhaustive_search(args.tsp_data)
 
 
 if __name__ == '__main__':
     main()
-
