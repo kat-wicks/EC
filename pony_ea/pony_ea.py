@@ -139,7 +139,7 @@ def evolutionary_algorithm(population_size, generations,
     while generation < generations:
 
         ##########
-        # Selection of fit solutions
+        # Select fit solutions
         ##########
         new_population = []
         while len(new_population) < population_size:
@@ -223,20 +223,18 @@ def modified_onepoint_crossover(parent_one, parent_two):
     :rtype: dict
 
     """
-    child = {'genome': None, 'fitness': DEFAULT_FITNESS, 'phenotype': None}
+    child = {'genome': [], 'fitness': DEFAULT_FITNESS, 'phenotype': None}
 
     # Pick a point for crossover
     point = random.randint(0, len(parent_one['genome']))
     # Get temporary genome concatenate
     _genome = parent_one['genome'][:point] + parent_two['genome'][:]
     # Remove duplicate genes
-    genome = []
     for gene in _genome:
-        if gene not in genome:
-            genome.append(gene)
+        if gene not in child['genome']:
+            child['genome'].append(gene)
 
-    child['genome'] = genome
-    child['phenotype'] = map_genome(genome)
+    child['phenotype'] = map_genome(child['genome'])
 
     return child
 
@@ -292,8 +290,6 @@ def print_stats(generation, population):
             sum((value - _ave) ** 2 for value in values)) / len(values))
         return _ave, _std
 
-    # Sort population
-    population.sort(reverse=True, key=lambda x: x['fitness'])
     # Get the fitness values
     fitness_values = [i['fitness'] for i in population]
     # Calculate average and standard deviation of the fitness in
@@ -333,7 +329,7 @@ def main():
     """
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--population_size", type=int, default=30,
+    parser.add_argument("-p", "--population_size", type=int, default=10,
                         help="Population size")
     parser.add_argument("-g", "--generations", type=int, default=5,
                         help="number of generations")
