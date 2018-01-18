@@ -3,18 +3,17 @@
 
 Implementation of an Evolutionary Algorithm to solve __Travelling Salesman Problem__. 
 
+Run with default settings
 ```
 python pony_ea.py
 ```
 
-An example cost matrix for the path between the cities
 
+# Examples
 
-# Example
-
-5x5 tour
+5 city tour with exhaustive solution shown
 ```
-python pony_ea.py --tsp_data tsp_costs_5.csv
+python pony_ea.py --tsp_data tsp_costs_5.csv --tsp_exhaustive
 
 Gen:0; Population fitness mean:11.47+-2.291; Best solution:[0, 4, 1, 3, 2], fitness:16.0
 Gen:1; Population fitness mean:10.90+-2.135; Best solution:[0, 4, 1, 2, 3], fitness:15.0
@@ -25,7 +24,7 @@ EA:
  Best tour cost is 16.0 for path [4, 1, 3, 2, 0]. Searched 150 points in 0.00570 seconds
 ```
 
-10x10
+10 city tour
 ```
 python pony_ea.py --tsp_data tsp_costs_10.csv
 

@@ -46,8 +46,6 @@ Annals of Operations Research 63(1996)339-370 339 Genetic algorithms for the tra
 """
 
 __author__ = "Erik Hemberg"
-__version__ = "2"
-__date__ = "17/01/2018"
 
 DEFAULT_FITNESS = float("inf")
 VERBOSE = False
@@ -109,7 +107,7 @@ def evolutionary_algorithm(population_size, generations,
     # Parse the TSP data to a cost matrix
     cost_matrix = tsp.parse_city_data(tsp_data)
     number_of_cities = len(cost_matrix)
-    # Base tour is shuffled for each individual in the population
+    # Base tour is shuffled for each solution in the population
     base_tour = list(range(0, number_of_cities))
 
     ##########
@@ -119,18 +117,18 @@ def evolutionary_algorithm(population_size, generations,
     for i in range(population_size):
         genome = base_tour[:]
         random.shuffle(genome)
-        individual = {'genome': genome,
+        solution = {'genome': genome,
                       'fitness': DEFAULT_FITNESS,
                       'phenotype': map_genome(genome)}
-        population.append(individual)
+        population.append(solution)
         if VERBOSE:
-            print('Initial {}: {}'.format(individual['genome'], individual['fitness']))
+            print('Initial {}: {}'.format(solution['genome'], solution['fitness']))
 
     ##########
     # Evaluate fitness
     ##########
-    for ind in population:
-        ind['fitness'] = tsp.get_tour_cost(ind['phenotype'], cost_matrix)
+    for solution in population:
+        solution['fitness'] = tsp.get_tour_cost(solution['phenotype'], cost_matrix)
 
     ##########
     # Generation loop
@@ -139,7 +137,7 @@ def evolutionary_algorithm(population_size, generations,
     while generation < generations:
 
         ##########
-        # Selection of fit solutions
+        # Select fit solutions
         ##########
         new_population = []
         while len(new_population) < population_size:
@@ -154,32 +152,32 @@ def evolutionary_algorithm(population_size, generations,
         ##########
         # Vary the population by crossover
         ##########
-        for i, ind in enumerate(new_population):
+        for i, solution in enumerate(new_population):
             if crossover_probability > random.random():
                 # Select a mate for crossover
                 mate = random.sample(new_population, 1)
                 # Put the child in the population
-                new_population[i] = modified_onepoint_crossover(ind, *mate)
+                new_population[i] = modified_onepoint_crossover(solution, *mate)
 
         ##########
         # Vary the population by mutation
         ##########
-        for i, ind in enumerate(new_population):
+        for i, solution in enumerate(new_population):
             if mutation_probability > random.random():
                 # Mutate genes by swapping them
-                new_population[i] = swap_mutation(ind)
+                new_population[i] = swap_mutation(solution)
 
         ##########
         # Evaluate fitness
         ##########
-        for ind in new_population:
-            ind['fitness'] = tsp.get_tour_cost(ind['phenotype'], cost_matrix)
+        for solution in new_population:
+            solution['fitness'] = tsp.get_tour_cost(solution['phenotype'], cost_matrix)
 
         ##########
         # Replace population
         ##########
         sort_population(population)
-        # Add elites from old population
+        # Add best(elite) solutions from old population
         population = population[:elite_size] + new_population
         sort_population(population)
         # Trim back to population size
@@ -223,49 +221,48 @@ def modified_onepoint_crossover(parent_one, parent_two):
     :rtype: dict
 
     """
-    child = {'genome': None, 'fitness': DEFAULT_FITNESS, 'phenotype': None}
+    child = {'genome': [], 'fitness': DEFAULT_FITNESS, 'phenotype': None}
 
     # Pick a point for crossover
     point = random.randint(0, len(parent_one['genome']))
     # Get temporary genome concatenate
     _genome = parent_one['genome'][:point] + parent_two['genome'][:]
     # Remove duplicate genes
-    genome = []
     for gene in _genome:
-        if gene not in genome:
-            genome.append(gene)
+        if gene not in child['genome']:
+            # Append the first gene to child genome
+            child['genome'].append(gene)
 
-    child['genome'] = genome
-    child['phenotype'] = map_genome(genome)
+    child['phenotype'] = map_genome(child['genome'])
 
     return child
 
 
-def swap_mutation(individual):
-    """Mutate the individual by random swap.
+def swap_mutation(solution):
+    """Mutate the solution by random swap.
 
-    :param individual:
-    :type individual: Individual
-    :return: Mutated individual
+    :param solution:
+    :type solution: dict
+    :return: Mutated solution
     :rtype: dict
 
     """
 
     # Pick points for swapping
-    genome_length = len(individual['genome']) - 1
+    genome_length = len(solution['genome']) - 1
     point_one = random.randint(0, genome_length)
     point_two = random.randint(0, genome_length)
     # Temporary store the values
-    value_one = individual['genome'][point_one]
-    value_two = individual['genome'][point_two]
+    value_one = solution['genome'][point_one]
+    value_two = solution['genome'][point_two]
     # Swap the values
-    individual['genome'][point_one] = value_two
-    individual['genome'][point_two] = value_one
+    solution['genome'][point_one] = value_two
+    solution['genome'][point_two] = value_one
     # Reset fitness
-    individual['fitness'] = DEFAULT_FITNESS
-    individual['phenotype'] = map_genome(individual['genome'])
+    solution['fitness'] = DEFAULT_FITNESS
+    solution['phenotype'] = map_genome(solution['genome'])
 
-    return individual
+    return solution
 
 
 def print_stats(generation, population):
@@ -292,8 +289,6 @@ def print_stats(generation, population):
             sum((value - _ave) ** 2 for value in values)) / len(values))
         return _ave, _std
 
-    # Sort population
-    population.sort(reverse=True, key=lambda x: x['fitness'])
     # Get the fitness values
     fitness_values = [i['fitness'] for i in population]
     # Calculate average and standard deviation of the fitness in
@@ -307,8 +302,7 @@ def print_stats(generation, population):
 def tsp_exhaustive_search(tsp_data):
     """
     Brute force search
-    :param tsp_data:
-    :return:
+    :param tsp_data: cost matrix
     """
     city_data = tsp.parse_city_data(tsp_data)
     base_tour = range(0, len(city_data))
@@ -331,19 +325,22 @@ def main():
     function and the Evolutionary Algorithm. Run the
     search.
     """
+
+    ###########
     # Parse arguments
+    ###########
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--population_size", type=int, default=30,
+    parser.add_argument("-p", "--population_size", type=int, default=10,
                         help="Population size")
     parser.add_argument("-g", "--generations", type=int, default=5,
                         help="number of generations")
     parser.add_argument("-s", "--seed", type=int, default=None,
                         help="Random seed number")
-    parser.add_argument("-cp", "--crossover_probability", type=float, default=0.8,
+    parser.add_argument("--crossover_probability", type=float, default=0.8,
                         help="Crossover probability")
-    parser.add_argument("-mp", "--mutation_probability", type=float, default=0.2,
+    parser.add_argument("--mutation_probability", type=float, default=0.2,
                         help="Mutation probability")
-    parser.add_argument("-t", "--tournament_size", type=int, default=2,
+    parser.add_argument("--tournament_size", type=int, default=2,
                         help="Tournament size")
     parser.add_argument("--elite_size", type=int, default=1,
                         help="Elite size")
@@ -363,6 +360,9 @@ def main():
     if VERBOSE:
         print(args)
 
+    ###########
+    # Evolutionary Algorithm search
+    ###########
     start_time = time.time()
     best_solution = evolutionary_algorithm(args.population_size, args.generations,
                                            args.mutation_probability, args.crossover_probability,

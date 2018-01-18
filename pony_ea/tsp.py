@@ -1,8 +1,6 @@
 import csv
 
 __author__ = "Erik Hemberg"
-__version__ = "2"
-__date__ = "17/01/2018"
 
 
 def parse_city_data(file_name):
