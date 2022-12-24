@@ -71,10 +71,12 @@ def map_genome(genome, X, is_defender=True, y=np.empty(0)):
         pca_scores = pca.fit_transform(X)
         knn = KNeighborsClassifier(n_neighbors = int(genome[1])).fit(pca_scores,y)
         return pca, knn
+    
     elif(not is_defender):
         mask = np.ones(X.shape[0], dtype=bool)
         mask[genome] = False
         return mask
+
     else:
         raise ValueError("need to have y to create defender phenotype")
 
@@ -82,7 +84,7 @@ def map_genome(genome, X, is_defender=True, y=np.empty(0)):
 
 def evolutionary_algorithm(population_size, generations, 
                            mutation_probability, crossover_probability,
-                           tournament_size, elite_size, tsp_data):
+                           tournament_size, elite_size, data):
     """
   The evolutionary algorithm (EA), performs a *stochastic parallel
   iterative* search. The algorithm:
@@ -122,7 +124,7 @@ def evolutionary_algorithm(population_size, generations,
     # Create problem
     ##########
     # Parse the  data to a cost matrix
-    train_X, test_X , train_y, test_y = defender.parse_city_data(tsp_data)
+    train_X, test_X , train_y, test_y = defender.parse_data(data)
     print(train_X.shape, train_y.shape, test_X.shape, test_y.shape)
     
     ##########
@@ -131,8 +133,10 @@ def evolutionary_algorithm(population_size, generations,
     population = []
     for i in range(population_size):
         _genome =[0,0]
-        _genome[0] =max(1, min(train_X.shape[1], int(np.random.normal(train_X.shape[1]*.2,train_X.shape[1]*.1))))
-        _genome[1] = max(1, min(train_X.shape[0], int(np.random.normal(train_X.shape[0]*.05,train_X.shape[0]*.025))))
+        # EH: any reason for picking the constants? I.e. the number of PCA dimensions and the neighbors.
+        # Another way for the PCA could be to pick a threshold for the weights that the number of dimensions must be over when you sum them.
+        _genome[0] = max(1, min(train_X.shape[1], int(np.random.normal(train_X.shape[1]*.2, train_X.shape[1]*.1))))
+        _genome[1] = max(1, min(train_X.shape[0], int(np.random.normal(train_X.shape[0]*.05, train_X.shape[0]*.025))))
         solution = {'genome': _genome,
                     'fitness': DEFAULT_FITNESS,
                     'phenotype': map_genome(_genome, train_X, is_defender = True, y=train_y)}
@@ -165,13 +169,23 @@ def evolutionary_algorithm(population_size, generations,
     # Evaluate attacker fitness
     ##########
     for solution in atk_population:
-        solution['fitness'] = attacker.evaluate_solution(solution['phenotype'], population[0]['phenotype'], train_X, train_y)
+        # EH: Why not evaluate against all defenders? Here attacker is only evaluated against one defender?
+        # It gets a bit messier against multiple adversaries since then you have to pick a "solution concept", e.g. mean expected utility or best-worst case
+        fitnesses_ = []
+        for defender_ in population:
+            fitness_ = attacker.evaluate_solution(solution['phenotype'], defender_['phenotype'], train_X, train_y)
+            fitnesses_.append(fitness_)
+        
+        # Here we use mean expected utility
+        solution['fitness'] = np.mean(fitnesses_)
 
     ##########
     # Generation loop
     ##########
     generation = 0
     while generation < generations:
+        # EH: Again why only against one solution, it becomes a very selective co-evolution
+        # So you could do as I tried to show for the initialization
         frozen_X = train_X[atk_population[0]['phenotype']]
         frozen_y = train_y[atk_population[0]['phenotype']]
         ##########
@@ -269,6 +283,7 @@ def evolutionary_algorithm(population_size, generations,
         ##########
         # Evaluate fitness
         ##########
+        # EH: Can you not save some mappings and only map the solutions in the new population before you evaluate the solutions?
         for solution in new_population:
             solution['fitness'] = attacker.evaluate_solution(solution['phenotype'], frozen_defender,train_X, train_y)
         ##########
@@ -425,7 +440,7 @@ def main():
     parser.add_argument("--elite_size", type=int, default=2,
                         help="Elite size")
     parser.add_argument("--tsp_data", type=str, default=r'C:\Users\mitadm\Downloads\triple (1)\data2.csv',
-                        help="Data for Travelling Salesman problem in a CSV file.")
+                        help="Data for ICS problem in a CSV file.")
     parser.add_argument("--verbose", action='store_true',
                         help="Verbose mode")
     args = parser.parse_args()

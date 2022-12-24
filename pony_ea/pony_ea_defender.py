@@ -113,7 +113,7 @@ def evolutionary_algorithm(population_size, generations,
     # Create problem
     ##########
     # Parse the  data to a cost matrix
-    train_X, test_X , train_y, test_y = defender.parse_city_data(tsp_data)
+    train_X, test_X , train_y, test_y = defender.parse_data(tsp_data)
     print(train_X.shape, train_y.shape, test_X.shape, test_y.shape)
     
     ##########

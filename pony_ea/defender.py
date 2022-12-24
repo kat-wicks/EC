@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 __author__ = "Erik Hemberg"
 
 
-def parse_city_data(file_name):
+def parse_data(file_name):
 
     """
     INPUT: File name pointing to a CSV of a threeclass Tommy Morris Dataset. 
@@ -21,7 +21,7 @@ def parse_city_data(file_name):
     print(df.columns)
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
     df.dropna( how="any", inplace=True)
-
+    # EH: Always fixed split? (maybe use the random seed passed in when starting?)
     return train_test_split(scaler.fit_transform(df.drop('marker', axis =1)) , df.marker, test_size = 0.2, random_state = 2022) 
 
 
